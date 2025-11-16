@@ -14,16 +14,10 @@ provider:
     TABLE_EMPLEADOS: ${env:TABLE_EMPLEADOS}
   
   layers:
-    - ${cf:alerta-utec-dependencias-dev.AlertaUTECPythonDependenciesLayer}
+    - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerExport}
 
 functions:
   # TODO: Implementar funciones Lambda
-  # - crearIncidente
-  # - obtenerIncidente
-  # - listarIncidentes
-  # - actualizarIncidente
-  # - asignarEmpleado
-  # - cambiarEstado
   placeholder:
     handler: handler.placeholder
     description: Función placeholder hasta implementar el microservicio
