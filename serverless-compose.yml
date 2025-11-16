@@ -14,7 +14,7 @@ state:
 hooks:
   before:deploy:
     - echo "📊 Creando recursos de infraestructura y poblando datos..."
-    - cd DataGenerator && python3 DataPoblator.py && cd ..
+    - chmod +x DataGenerator/run_poblator.sh && DataGenerator/run_poblator.sh
     - echo "✅ Recursos de infraestructura listos"
 
 services:
