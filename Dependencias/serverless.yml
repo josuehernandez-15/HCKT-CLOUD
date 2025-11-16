@@ -7,27 +7,9 @@ provider:
   iam:
     role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
 
-plugins:
-  - serverless-python-requirements
-
-custom:
-  pythonRequirements:
-    dockerizePip: false
-    layer: true
-    slim: true
-    strip: false
-    zip: true
-    useStaticCache: false
-    useDownloadCache: false
-    pipCmdExtraArgs:
-      - --platform manylinux2014_x86_64
-      - --implementation cp
-      - --python-version 3.13
-      - --only-binary=:all:
-      - --upgrade
-
 layers:
   pythonDependencies:
+    path: python-dependencies
     name: ${self:provider.stage, 'dev'}-alerta-utec-python-dependencies
     description: Capa compartida con dependencias Python para todos los microservicios
     compatibleRuntimes:
@@ -38,14 +20,14 @@ layers:
 
 resources:
   Outputs:
-    PythonDependenciesLayerArn:
+    PythonDependenciesLayerExport:
       Value:
-        Ref: PythonRequirementsLambdaLayer
+        Ref: PythonDependenciesLambdaLayer
       Export:
-        Name: AlertaUTEC-Python-Dependencies-Layer
+        Name: AlertaUTECPythonDependenciesLayer
     
     PythonDependenciesLayerVersion:
       Value:
-        Ref: PythonRequirementsLambdaLayer
+        Ref: PythonDependenciesLambdaLayer
       Export:
         Name: AlertaUTEC-Python-Layer-Version
