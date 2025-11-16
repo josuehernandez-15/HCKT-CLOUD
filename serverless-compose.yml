@@ -16,14 +16,12 @@ services:
     path: Usuarios
     dependsOn:
       - dependencias
-      - infraestructura
 
   # Microservicio de gestión de incidentes
   incidentes:
     path: Incidentes
     dependsOn:
       - dependencias
-      - infraestructura
       - usuarios
 
   # Microservicio de analítica
@@ -31,6 +29,5 @@ services:
     path: Analitica
     dependsOn:
       - dependencias
-      - infraestructura
       - incidentes
 
