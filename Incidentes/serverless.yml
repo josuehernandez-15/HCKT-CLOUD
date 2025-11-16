@@ -4,7 +4,7 @@ provider:
   name: aws
   runtime: python3.13
   region: ${opt:region, env:AWS_REGION, 'us-east-1'}
-  stage: ${sls:stage}
+  stage: ${opt:stage, 'dev'}
   memorySize: 256
   timeout: 30
   iam:
