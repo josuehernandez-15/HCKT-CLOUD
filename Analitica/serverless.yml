@@ -107,7 +107,7 @@ resources:
         TaskRoleArn: !GetAtt AnaliticaAirflowTaskRole.Arn
         ContainerDefinitions:
           - Name: airflow
-            Image: ${env:ANALITICA_AIRFLOW_IMAGE}
+            Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/alerta-utec-airflow:latest
             Essential: true
             PortMappings:
               - ContainerPort: 8080
@@ -120,18 +120,18 @@ resources:
             Environment:
               - Name: AWS_REGION
                 Value: ${env:AWS_REGION, 'us-east-1'}
+              - Name: AWS_ACCOUNT_ID
+                Value: !Sub ${AWS::AccountId}
               - Name: ANALITICA_TABLES
                 Value: ${env:ANALITICA_TABLES}
               - Name: ANALITICA_S3_BUCKET
                 Value: ${env:ANALITICA_S3_BUCKET}
-              - Name: ANALITICA_S3_PREFIX
-                Value: ${env:ANALITICA_S3_PREFIX, 'analitica/raw'}
               - Name: ANALITICA_GLUE_DATABASE
                 Value: ${env:ANALITICA_GLUE_DATABASE}
               - Name: ANALITICA_GLUE_CRAWLER
                 Value: ${env:ANALITICA_GLUE_CRAWLER}
-              - Name: ANALITICA_GLUE_ROLE_ARN
-                Value: ${env:ANALITICA_GLUE_ROLE_ARN}
+              - Name: ANALITICA_GLUE_ROLE_NAME
+                Value: ${env:ANALITICA_GLUE_ROLE_NAME, 'GlueCrawlerRole'}
 
     AnaliticaAirflowService:
       Type: AWS::ECS::Service
