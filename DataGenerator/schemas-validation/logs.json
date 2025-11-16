@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Logs",
+  "type": "object",
+  "x-dynamodb": {
+    "partition_key": "log_id"
+  },
+  "properties": {
+    "log_id": { "type": "string" },
+
+    "nivel": {
+      "type": "string",
+      "enum": ["INFO", "WARNING", "ERROR", "CRITICAL"]
+    },
+
+    "mensaje": { "type": "string" },
+
+    "servicio": { "type": "string" },
+
+    "contexto": {
+      "type": "object",
+      "additionalProperties": true
+    },
+
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+
+  "required": [
+    "log_id",
+    "nivel",
+    "mensaje",
+    "servicio",
+    "timestamp"
+  ],
+
+  "additionalProperties": false
+}

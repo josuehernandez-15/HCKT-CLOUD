@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Usuarios",
+  "type": "object",
+  "x-dynamodb": {
+    "partition_key": "user_id"
+  },
+  "properties": {
+    "user_id": { "type": "string" },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "nombre": { "type": "string" },
+    "rol": {
+      "type": "string",
+      "enum": ["admin", "analista", "operador"]
+    }
+  },
+  "required": ["user_id", "email", "nombre", "rol"],
+  "additionalProperties": false
+}

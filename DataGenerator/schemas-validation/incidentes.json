@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Incidentes",
+  "type": "object",
+  "x-dynamodb": {
+    "partition_key": "incidente_id"
+  },
+  "properties": {
+    "incidente_id": { "type": "string" },
+    "titulo": { "type": "string" },
+    "descripcion": { "type": "string" },
+
+    "piso": { "type": "integer" },
+
+    "ubicacion": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      },
+      "required": ["x", "y"],
+      "additionalProperties": false
+    },
+
+    "estado": {
+      "type": "string",
+      "enum": ["reportado", "en_progreso", "resuelto"]
+    },
+
+    "usuario_id": { "type": "string" },
+
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+
+  "required": [
+    "incidente_id",
+    "titulo",
+    "descripcion",
+    "piso",
+    "ubicacion",
+    "estado",
+    "usuario_id",
+    "created_at"
+  ],
+
+  "additionalProperties": false
+}
