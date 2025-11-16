@@ -670,6 +670,21 @@
 				},
 				{
 					"name": "Listar usuarios (P.A. o Autoridad)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login personal 200\", function () { pm.response.to.have.status(200); });\r",
+									"const data = pm.response.json();\r",
+									"pm.collectionVariables.set(\"usuarios_last_key\", data.last_key);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -744,7 +759,32 @@
 				},
 				{
 					"name": "Listar Empleados (P.A. o Autoridad)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login personal 200\", function () { pm.response.to.have.status(200); });\r",
+									"const data = pm.response.json();\r",
+									"pm.collectionVariables.set(\"usuarios_last_key\", data.last_key);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_autoridad}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1176,6 +1216,10 @@
 		},
 		{
 			"key": "contrasena_estudiante_gestionado",
+			"value": ""
+		},
+		{
+			"key": "usuarios_last_key",
 			"value": ""
 		}
 	]
