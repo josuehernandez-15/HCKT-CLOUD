@@ -14,62 +14,54 @@ provider:
     INCIDENTES_BUCKET: ${env:INCIDENTES_BUCKET, 'alerta-utec-incidentes-evidencias'}
     JWT_SECRET: ${env:JWT_SECRET}
     JWT_EXPIRATION_HOURS: ${env:JWT_EXPIRATION_HOURS}
-  
   layers:
     - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerExport}
-  
-  httpApi:
-    cors: true
 
 functions:
   CreateIncidente:
     handler: CRUD/create_report.lambda_handler
     description: Crea un nuevo incidente
     events:
-      - httpApi:
-          method: POST
-          path: /incidentes/crear
+      - http:
+          method: post
+          path: incidentes/crear
           cors: true
-    
-  UpdateIncidenteUsuario: 
+  UpdateIncidenteUsuario:
     handler: CRUD/update_report_users.lambda_handler
     description: Actualiza un incidente (usuario)
     events:
-      - httpApi:
-          method: PUT
-          path: /incidentes/update
+      - http:
+          method: put
+          path: incidentes/update
           cors: true
-
-  UpdateIncidenteAdmin: 
+  UpdateIncidenteAdmin:
     handler: CRUD/update_report_admin.lambda_handler
     description: Actualiza el estado de un incidente (admin)
     events:
-      - httpApi:
-          method: PUT
-          path: /incidentes/update_estado
+      - http:
+          method: put
+          path: incidentes/update_estado
           cors: true
-
   SearchIncidente:
     handler: CRUD/search_report.lambda_handler
     description: Busca un incidente por ID
     events:
-      - httpApi:
-          method: POST 
-          path: /incidentes/buscar
+      - http:
+          method: post
+          path: incidentes/buscar
           cors: true
-
   ListIncidentes:
     handler: CRUD/list_report.lambda_handler
     description: Lista incidentes con paginación
     events:
-      - httpApi:
-          method: POST
-          path: /incidentes/listar
+      - http:
+          method: post
+          path: incidentes/listar
           cors: true
 
 resources:
   Outputs:
     IncidentesApiUrl:
-      Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com
+      Value: !Sub https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}
       Export:
         Name: ${self:service}-ApiUrl
