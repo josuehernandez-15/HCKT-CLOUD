@@ -29,6 +29,7 @@ services:
     dependsOn:
       - dependencias
       - usuarios
+      - notificaciones
 
   # Microservicio de analítica
   analitica:
@@ -43,7 +44,6 @@ services:
     dependsOn:
       - dependencias
       - usuarios
-      - incidentes
 
   # Microservicio de Logs
   logs:

@@ -60,3 +60,12 @@ functions:
           path: notificaciones/incidente
           method: post
           cors: true
+
+resources:
+  Outputs:
+    NotifyIncidenteLambdaArn:
+      Description: "ARN de la Lambda que envía notificaciones de incidentes por WebSocket"
+      Value:
+        Fn::GetAtt: [NotifyIncidenteLambdaFunction, Arn]
+      Export:
+        Name: alerta-utec-notificaciones-${self:provider.stage}-NotifyIncidenteLambdaArn
