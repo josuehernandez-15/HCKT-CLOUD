@@ -65,11 +65,17 @@ def lambda_handler(event, context):
         }
 
     # Validar si el usuario ya existe
-    resp = usuarios_table.get_item(Key={"correo": correo})
-    if "Item" in resp:
+    resp = usuarios_table.query(
+        IndexName='EmailIndex',
+        KeyConditionExpression='correo = :correo',  # ← Cambiado a 'correo'
+        ExpressionAttributeValues={':correo': correo}
+    )
+
+    # Verificar si existe el usuario
+    if resp.get('Count', 0) > 0:
         return {
-            "statusCode": 409,
-            "body": json.dumps({"message": "El usuario ya existe"})
+            'statusCode': 400,
+            'body': json.dumps({'error': 'El correo ya está registrado'})
         }
 
     # Generar un ID único para el usuario
@@ -79,7 +85,7 @@ def lambda_handler(event, context):
     item = {
         "usuario_id": usuario_id,
         "nombre": nombre,
-        "correo": correo,
+        "correo": correo,  # ← Cambiado de "email" a "correo"
         "contrasena": contrasena,
         "rol": rol
     }

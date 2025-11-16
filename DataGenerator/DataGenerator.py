@@ -77,8 +77,8 @@ def generar_usuarios(cantidad=10):
         nombre = random.choice(NOMBRES)
         usuario = {
             "usuario_id": str(uuid.uuid4()),
-            "correo": generar_correo(nombre),
-            "contraseña": f"hash_{uuid.uuid4().hex[:16]}",  # Simula un hash
+            "correo": generar_correo(nombre),  # ← Cambiado de "email" a "correo"
+            "contraseña": f"hash_{uuid.uuid4().hex[:16]}",
             "nombre": nombre,
             "rol": random.choice(roles)
         }

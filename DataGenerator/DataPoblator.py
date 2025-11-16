@@ -423,11 +423,11 @@ def create_all_resources():
         key_schema=[{'AttributeName': 'usuario_id', 'KeyType': 'HASH'}],
         attribute_definitions=[
             {'AttributeName': 'usuario_id', 'AttributeType': 'S'},
-            {'AttributeName': 'email', 'AttributeType': 'S'}
+            {'AttributeName': 'correo', 'AttributeType': 'S'}  # ← Cambiado a 'correo'
         ],
         global_secondary_indexes=[{
             'IndexName': 'EmailIndex',
-            'KeySchema': [{'AttributeName': 'email', 'KeyType': 'HASH'}],
+            'KeySchema': [{'AttributeName': 'correo', 'KeyType': 'HASH'}],  # ← Cambiado a 'correo'
             'Projection': {'ProjectionType': 'ALL'}
         }]
     ):
@@ -460,7 +460,7 @@ def create_all_resources():
         key_schema=[{'AttributeName': 'empleado_id', 'KeyType': 'HASH'}],
         attribute_definitions=[
             {'AttributeName': 'empleado_id', 'AttributeType': 'S'},
-            {'AttributeName': 'email', 'AttributeType': 'S'}
+            {'AttributeName': 'email', 'AttributeType': 'S'}  # ← Empleados sí usa 'email'
         ],
         global_secondary_indexes=[{
             'IndexName': 'EmailIndex',
