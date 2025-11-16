@@ -14,9 +14,11 @@ load_dotenv()
 
 # Configuración de AWS
 AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
+AWS_ACCOUNT_ID = os.getenv('AWS_ACCOUNT_ID')
 
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 dynamodb_client = boto3.client('dynamodb', region_name=AWS_REGION)
+s3_client = boto3.client('s3', region_name=AWS_REGION)
 
 # Nombres de las tablas
 TABLE_USUARIOS = os.getenv('TABLE_USUARIOS')
@@ -24,6 +26,9 @@ TABLE_INCIDENTES = os.getenv('TABLE_INCIDENTES')
 TABLE_EMPLEADOS = os.getenv('TABLE_EMPLEADOS')
 TABLE_LOGS = os.getenv('TABLE_LOGS')
 TABLE_CONEXIONES = os.getenv('TABLE_CONEXIONES')
+
+# Nombre del bucket
+S3_BUCKET_NAME = f"alerta-utec-data-{AWS_ACCOUNT_ID}"
 
 # Carpeta con los datos JSON
 DATA_DIR = "example-data"
@@ -264,6 +269,211 @@ def verify_credentials():
         return False
 
 
+def create_s3_bucket():
+    """Crea el bucket S3 si no existe"""
+    try:
+        print(f"\n📦 Verificando bucket S3: {S3_BUCKET_NAME}")
+        s3_client.head_bucket(Bucket=S3_BUCKET_NAME)
+        print(f"   ✅ El bucket '{S3_BUCKET_NAME}' ya existe")
+        return True
+    except ClientError as e:
+        error_code = e.response['Error']['Code']
+        if error_code == '404':
+            try:
+                print(f"   🔨 Creando bucket '{S3_BUCKET_NAME}'...")
+                if AWS_REGION == 'us-east-1':
+                    s3_client.create_bucket(Bucket=S3_BUCKET_NAME)
+                else:
+                    s3_client.create_bucket(
+                        Bucket=S3_BUCKET_NAME,
+                        CreateBucketConfiguration={'LocationConstraint': AWS_REGION}
+                    )
+                
+                # Habilitar versionado
+                s3_client.put_bucket_versioning(
+                    Bucket=S3_BUCKET_NAME,
+                    VersioningConfiguration={'Status': 'Enabled'}
+                )
+                
+                # Bloquear acceso público
+                s3_client.put_public_access_block(
+                    Bucket=S3_BUCKET_NAME,
+                    PublicAccessBlockConfiguration={
+                        'BlockPublicAcls': True,
+                        'IgnorePublicAcls': True,
+                        'BlockPublicPolicy': True,
+                        'RestrictPublicBuckets': True
+                    }
+                )
+                
+                print(f"   ✅ Bucket '{S3_BUCKET_NAME}' creado exitosamente")
+                return True
+            except Exception as create_error:
+                print(f"   ❌ Error al crear bucket: {str(create_error)}")
+                return False
+        else:
+            print(f"   ❌ Error al verificar bucket: {str(e)}")
+            return False
+
+
+def create_dynamodb_table(table_name, key_schema, attribute_definitions, 
+                          global_secondary_indexes=None, stream_enabled=False, ttl_attribute=None):
+    """Crea una tabla DynamoDB si no existe"""
+    try:
+        print(f"\n📊 Verificando tabla: {table_name}")
+        dynamodb_client.describe_table(TableName=table_name)
+        print(f"   ✅ La tabla '{table_name}' ya existe")
+        return True
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ResourceNotFoundException':
+            try:
+                print(f"   🔨 Creando tabla '{table_name}'...")
+                
+                table_config = {
+                    'TableName': table_name,
+                    'KeySchema': key_schema,
+                    'AttributeDefinitions': attribute_definitions,
+                    'BillingMode': 'PAY_PER_REQUEST',
+                    'Tags': [
+                        {'Key': 'Project', 'Value': 'alerta-utec'},
+                        {'Key': 'Environment', 'Value': 'dev'}
+                    ]
+                }
+                
+                if global_secondary_indexes:
+                    table_config['GlobalSecondaryIndexes'] = global_secondary_indexes
+                
+                if stream_enabled:
+                    table_config['StreamSpecification'] = {
+                        'StreamEnabled': True,
+                        'StreamViewType': 'NEW_AND_OLD_IMAGES'
+                    }
+                
+                dynamodb_client.create_table(**table_config)
+                
+                # Esperar a que la tabla esté activa
+                waiter = dynamodb_client.get_waiter('table_exists')
+                waiter.wait(TableName=table_name)
+                
+                # Habilitar TTL si se especifica
+                if ttl_attribute:
+                    dynamodb_client.update_time_to_live(
+                        TableName=table_name,
+                        TimeToLiveSpecification={
+                            'Enabled': True,
+                            'AttributeName': ttl_attribute
+                        }
+                    )
+                
+                print(f"   ✅ Tabla '{table_name}' creada exitosamente")
+                return True
+            except Exception as create_error:
+                print(f"   ❌ Error al crear tabla: {str(create_error)}")
+                return False
+        else:
+            print(f"   ❌ Error al verificar tabla: {str(e)}")
+            return False
+
+
+def create_all_resources():
+    """Crea todas las tablas DynamoDB y el bucket S3"""
+    print("\n" + "=" * 60)
+    print("🏗️  CREANDO RECURSOS AWS")
+    print("=" * 60)
+    
+    # Crear bucket S3
+    if not create_s3_bucket():
+        return False
+    
+    # Crear tabla de Usuarios
+    if not create_dynamodb_table(
+        table_name=TABLE_USUARIOS,
+        key_schema=[{'AttributeName': 'usuario_id', 'KeyType': 'HASH'}],
+        attribute_definitions=[
+            {'AttributeName': 'usuario_id', 'AttributeType': 'S'},
+            {'AttributeName': 'email', 'AttributeType': 'S'}
+        ],
+        global_secondary_indexes=[{
+            'IndexName': 'EmailIndex',
+            'KeySchema': [{'AttributeName': 'email', 'KeyType': 'HASH'}],
+            'Projection': {'ProjectionType': 'ALL'}
+        }]
+    ):
+        return False
+    
+    # Crear tabla de Incidentes
+    if not create_dynamodb_table(
+        table_name=TABLE_INCIDENTES,
+        key_schema=[{'AttributeName': 'incidente_id', 'KeyType': 'HASH'}],
+        attribute_definitions=[
+            {'AttributeName': 'incidente_id', 'AttributeType': 'S'},
+            {'AttributeName': 'fecha_reporte', 'AttributeType': 'S'},
+            {'AttributeName': 'estado', 'AttributeType': 'S'}
+        ],
+        global_secondary_indexes=[{
+            'IndexName': 'EstadoIndex',
+            'KeySchema': [
+                {'AttributeName': 'estado', 'KeyType': 'HASH'},
+                {'AttributeName': 'fecha_reporte', 'KeyType': 'RANGE'}
+            ],
+            'Projection': {'ProjectionType': 'ALL'}
+        }],
+        stream_enabled=True
+    ):
+        return False
+    
+    # Crear tabla de Empleados
+    if not create_dynamodb_table(
+        table_name=TABLE_EMPLEADOS,
+        key_schema=[{'AttributeName': 'empleado_id', 'KeyType': 'HASH'}],
+        attribute_definitions=[
+            {'AttributeName': 'empleado_id', 'AttributeType': 'S'},
+            {'AttributeName': 'email', 'AttributeType': 'S'}
+        ],
+        global_secondary_indexes=[{
+            'IndexName': 'EmailIndex',
+            'KeySchema': [{'AttributeName': 'email', 'KeyType': 'HASH'}],
+            'Projection': {'ProjectionType': 'ALL'}
+        }]
+    ):
+        return False
+    
+    # Crear tabla de Logs
+    if not create_dynamodb_table(
+        table_name=TABLE_LOGS,
+        key_schema=[
+            {'AttributeName': 'log_id', 'KeyType': 'HASH'},
+            {'AttributeName': 'timestamp', 'KeyType': 'RANGE'}
+        ],
+        attribute_definitions=[
+            {'AttributeName': 'log_id', 'AttributeType': 'S'},
+            {'AttributeName': 'timestamp', 'AttributeType': 'S'}
+        ],
+        ttl_attribute='ttl'
+    ):
+        return False
+    
+    # Crear tabla de Conexiones
+    if not create_dynamodb_table(
+        table_name=TABLE_CONEXIONES,
+        key_schema=[{'AttributeName': 'conexion_id', 'KeyType': 'HASH'}],
+        attribute_definitions=[
+            {'AttributeName': 'conexion_id', 'AttributeType': 'S'},
+            {'AttributeName': 'usuario_id', 'AttributeType': 'S'}
+        ],
+        global_secondary_indexes=[{
+            'IndexName': 'UsuarioIndex',
+            'KeySchema': [{'AttributeName': 'usuario_id', 'KeyType': 'HASH'}],
+            'Projection': {'ProjectionType': 'ALL'}
+        }],
+        ttl_attribute='ttl'
+    ):
+        return False
+    
+    print("\n✅ Todos los recursos creados exitosamente")
+    return True
+
+
 def main():
     """Función principal"""
     print("=" * 60)
@@ -271,6 +481,11 @@ def main():
     print("=" * 60)
 
     if not verify_credentials():
+        return
+
+    # Crear recursos
+    if not create_all_resources():
+        print("\n❌ Error al crear recursos. Abortando...")
         return
 
     if not os.path.exists(DATA_DIR):
@@ -289,7 +504,7 @@ def main():
         if config["table_name"]:
             success = populate_table(filename, config)
             results[filename] = success
-        time.sleep(1)  # Pequeña pausa entre tablas
+        time.sleep(1)
 
     print("\n" + "=" * 60)
     print("📋 RESUMEN")

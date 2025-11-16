@@ -26,14 +26,16 @@ services:
     path: Usuarios
     dependsOn:
       - dependencias
-      - infraestructura
+    hooks:
+      before:deploy:deploy:
+        - echo "📊 Creando recursos de infraestructura y poblando datos..."
+        - cd DataGenerator && python3 DataPoblator.py && cd ..
 
   # Microservicio de gestión de incidentes
   incidentes:
     path: Incidentes
     dependsOn:
       - dependencias
-      - infraestructura
       - usuarios
 
   # Microservicio de analítica
@@ -41,6 +43,5 @@ services:
     path: Analitica
     dependsOn:
       - dependencias
-      - infraestructura
       - incidentes
 
