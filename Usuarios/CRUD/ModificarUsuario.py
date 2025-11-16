@@ -22,7 +22,7 @@ def lambda_handler(event, context):
     authorizer = event.get("requestContext", {}).get("authorizer", {})
     usuario_autenticado = {
         "correo": authorizer.get("correo"),
-        "role": authorizer.get("role"),
+        "rol": authorizer.get("rol"),
     }
 
     correo_objetivo = body.get("correo", usuario_autenticado["correo"])
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
         }
 
     es_mismo_usuario = usuario_autenticado["correo"] == correo_objetivo
-    es_autoridad = usuario_autenticado["role"] == "autoridad"
+    es_autoridad = usuario_autenticado["rol"] == "autoridad"
 
     if not (es_mismo_usuario or es_autoridad):
         return {

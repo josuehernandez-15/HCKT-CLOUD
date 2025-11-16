@@ -18,7 +18,7 @@ def generar_token(correo, role, nombre):
     
     payload = {
         "correo": correo,
-        "role": role,
+        "rol": role,
         "nombre": nombre,
         "iat": datetime.utcnow(),
         "exp": datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS)
@@ -46,14 +46,14 @@ def validar_token(token):
 
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        role = payload.get("role")
-        if role not in ALLOWED_ROLES:
+        rol = payload.get("rol", payload.get("role"))
+        if rol not in ALLOWED_ROLES:
             return {"valido": False, "error": "Rol inválido en token"}
         
         return {
             "valido": True,
             "correo": payload.get("correo"),
-            "role": role,
+            "rol": rol,
             "nombre": payload.get("nombre", "")
         }
     except jwt.ExpiredSignatureError:
@@ -73,5 +73,5 @@ def verificar_rol(usuario_autenticado, roles_permitidos):
     Returns:
         bool: True si tiene permiso
     """
-    role_usuario = usuario_autenticado.get("role")
+    role_usuario = usuario_autenticado.get("rol")
     return role_usuario in roles_permitidos

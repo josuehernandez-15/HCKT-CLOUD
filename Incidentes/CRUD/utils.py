@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # Solo necesitamos JWT_SECRET, no tablas de DynamoDB
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRATION_HOURS = int(os.getenv("JWT_EXPIRATION_HOURS"))
+JWT_EXPIRATION_HOURS = int(os.getenv("JWT_EXPIRATION_HOURS", "24"))
 
 
 def validar_token(token):
@@ -16,7 +16,7 @@ def validar_token(token):
         dict: {
             "valido": bool,
             "correo": str,
-            "role": str,
+            "rol": str,
             "nombre": str,
             "error": str (opcional)
         }
@@ -26,11 +26,12 @@ def validar_token(token):
 
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        rol = payload.get("rol", payload.get("rol", "estudiante"))
         
         return {
             "valido": True,
             "correo": payload.get("correo"),
-            "rol": payload.get("rol", "estudiante"),
+            "rol": rol,
             "nombre": payload.get("nombre", "")
         }
     except jwt.ExpiredSignatureError:

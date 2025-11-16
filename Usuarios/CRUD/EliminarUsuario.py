@@ -13,7 +13,7 @@ def lambda_handler(event, context):
     authorizer = event.get("requestContext", {}).get("authorizer", {})
     usuario_autenticado = {
         "correo": authorizer.get("correo"),
-        "role": authorizer.get("role")
+        "rol": authorizer.get("rol")
     }
     
     # Procesar el cuerpo del evento

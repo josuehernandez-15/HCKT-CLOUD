@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         },
         "context": {
             "correo": resultado["correo"],
-            "role": resultado["role"],
+            "rol": resultado["rol"],
             "nombre": resultado["nombre"]
         }
     }
