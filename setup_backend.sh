@@ -35,8 +35,28 @@ check_env() {
     export $(cat .env | grep -v '^#' | xargs)
 }
 
+# Función para preparar dependencias
+prepare_dependencies() {
+    echo -e "\n${BLUE}📦 Preparando Lambda Layer de dependencias...${NC}"
+    
+    cd Dependencias/python-dependencies
+    
+    # Verificar si ya existe la carpeta python con paquetes
+    if [ -d "python" ] && [ "$(ls -A python 2>/dev/null)" ]; then
+        echo -e "${GREEN}✅ Dependencias ya están instaladas${NC}"
+    else
+        echo -e "${YELLOW}📥 Instalando dependencias Python...${NC}"
+        mkdir -p python
+        pip3 install -r ../requirements.txt -t python/ --upgrade --quiet
+        echo -e "${GREEN}✅ Dependencias instaladas${NC}"
+    fi
+    
+    cd ../..
+}
+
 # Función para crear infraestructura
 deploy_infrastructure() {
+    echo -e "\n${BLUE}🏗️  Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
     cd DataGenerator
     python3 DataPoblator.py
     cd ..
@@ -46,6 +66,7 @@ deploy_infrastructure() {
 # Función para desplegar microservicios
 deploy_services() {
     echo -e "\n${BLUE}🚀 Desplegando microservicios con Serverless Compose...${NC}"
+    prepare_dependencies  # ← Agregar esta línea
     sls deploy
     echo -e "${GREEN}✅ Microservicios desplegados${NC}"
 }
