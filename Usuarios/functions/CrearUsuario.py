@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+import jwt
 import uuid
 from functions.utils import generar_token
 
