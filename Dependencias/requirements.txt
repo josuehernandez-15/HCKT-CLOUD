@@ -8,6 +8,7 @@ botocore>=1.35.0
 
 # JWT para autenticación
 PyJWT>=2.9.0
+cryptography==42.0.5
 
 # Utilidades
 python-dateutil>=2.9.0
