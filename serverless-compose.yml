@@ -7,11 +7,10 @@ app: alerta-utec-backend
 stage: dev
 
 hooks:
-  before:deploy:
-    - echo "📊 Ejecutando poblamiento de datos..."
+  compose:deploy:before:
+    - echo "📊 Ejecutando poblamiento..."
     - python3 DataGenerator/DataPoblator.py
     - echo "✅ Poblamiento completado"
-
 
 services:
   # Capa compartida con dependencias Python
