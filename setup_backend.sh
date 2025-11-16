@@ -68,14 +68,16 @@ ensure_analitica_bucket() {
     exit 1
   fi
 
+  local region="${AWS_REGION:-us-east-1}"
+
   if aws s3api head-bucket --bucket "${ANALITICA_S3_BUCKET}" 2>/dev/null; then
     echo -e "${GREEN}✅ Bucket '${ANALITICA_S3_BUCKET}' disponible${NC}"
   else
     echo -e "${YELLOW}🔨 Creando bucket '${ANALITICA_S3_BUCKET}'...${NC}"
-    if [ "${AWS_REGION}" = "us-east-1" ]; then
+    if [ "${region}" = "us-east-1" ]; then
       aws s3api create-bucket --bucket "${ANALITICA_S3_BUCKET}" >/dev/null
     else
-      aws s3api create-bucket --bucket "${ANALITICA_S3_BUCKET}" --create-bucket-configuration LocationConstraint="${AWS_REGION}" >/dev/null
+      aws s3api create-bucket --bucket "${ANALITICA_S3_BUCKET}" --create-bucket-configuration LocationConstraint="${region}" >/dev/null
     fi
     aws s3api put-bucket-versioning --bucket "${ANALITICA_S3_BUCKET}" --versioning-configuration Status=Enabled >/dev/null
     aws s3api put-public-access-block --bucket "${ANALITICA_S3_BUCKET}" --public-access-block-configuration BlockPublicAcls=true IgnorePublicAcls=true BlockPublicPolicy=true RestrictPublicBuckets=true >/dev/null
