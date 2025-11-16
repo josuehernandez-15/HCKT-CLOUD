@@ -21,11 +21,40 @@ def enviar_correo_bienvenida(nombre: str, correo: str):
         print("Brevo no configurado (falta BREVO_API_KEY o EMAIL_FROM)")
         return
 
-    asunto = "Bienvenido a Alerta UTEC"
+    asunto = "🎓 Bienvenido a Alerta UTEC"
+
     html = f"""
-        <p>Hola <strong>{nombre}</strong>,</p>
-        <p>¡Bienvenido a la aplicación <strong>Alerta UTEC</strong>! 🎓</p>
-        <p>Ya puedes usar la plataforma para registrar tus incidencias.</p>
+        <div style="font-family: Arial, sans-serif; font-size: 14px; color: #222;">
+            <p>Hola <strong>{nombre}</strong>,</p>
+
+            <p>
+                ¡Gracias por registrarte en <strong>Alerta UTEC</strong>! 🎓<br/>
+                Desde ahora puedes usar la plataforma para reportar incidencias dentro del campus
+                y ayudarnos a mantener un entorno más seguro y ordenado.
+            </p>
+
+            <p><strong>¿Qué puedes hacer con Alerta UTEC?</strong></p>
+            <ul>
+                <li>Registrar incidencias de limpieza, TI, seguridad y mantenimiento.</li>
+                <li>Indicar la ubicación exacta del problema.</li>
+                <li>Adjuntar evidencias para que el equipo pueda atender más rápido tu solicitud.</li>
+            </ul>
+
+            <p>
+                Te invitamos a ingresar a la app y registrar tu primera incidencia cuando lo necesites.
+            </p>
+
+            <p style="margin-top: 24px;">
+                Saludos,<br/>
+                <strong>Equipo Alerta UTEC</strong>
+            </p>
+
+            <hr style="border: none; border-top: 1px solid #ddd; margin-top: 24px;"/>
+
+            <p style="font-size: 12px; color: #777;">
+                Este es un correo automático, por favor no lo respondas.
+            </p>
+        </div>
     """
 
     url = "https://api.brevo.com/v3/smtp/email"
@@ -46,6 +75,7 @@ def enviar_correo_bienvenida(nombre: str, correo: str):
         print("Correo de bienvenida enviado. Status:", resp.status_code, "Body:", resp.text)
     except Exception as e:
         print("Error al enviar correo de bienvenida:", repr(e))
+
 
 def lambda_handler(event, context):
     body = {}
