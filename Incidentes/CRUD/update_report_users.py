@@ -17,6 +17,25 @@ TIPO_ENUM = ["limpieza", "TI" ,"seguridad", "mantenimiento", "otro"]
 NIVEL_URGENCIA_ENUM = ["bajo", "medio", "alto", "critico"]
 PISO_RANGO = range(-2, 12)
 
+def _to_dynamodb_numbers(obj):
+    """
+    Convierte recursivamente int/float -> Decimal.
+    Deja bool, None, str, Decimal, etc. tal cual.
+    Esto evita el error 'Float types are not supported' cuando hay
+    campos como ubicacion.x / ubicacion.y o piso con decimales.
+    """
+    if isinstance(obj, dict):
+        return {k: _to_dynamodb_numbers(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_to_dynamodb_numbers(x) for x in obj]
+    if isinstance(obj, bool) or obj is None:
+        return obj
+    if isinstance(obj, Decimal):
+        return obj
+    if isinstance(obj, (int, float)):
+        return Decimal(str(obj))
+    return obj
+
 def lambda_handler(event, context):
     headers = event.get("headers") or {}
     auth_header = headers.get("Authorization") or headers.get("authorization") or ""
@@ -211,6 +230,8 @@ def lambda_handler(event, context):
             "lat": lat,
             "lng": lng
         }
+
+    incidente_actual = _to_dynamodb_numbers(incidente_actual)
 
     try:
         incidentes_table.put_item(Item=incidente_actual)
