@@ -55,7 +55,9 @@ prepare_dependencies() {
     mkdir -p python
 
     echo -e "${YELLOW}📥 Instalando dependencias Python (forzado)...${NC}"
-    pip3 install -r ../requirements.txt -t python/ --upgrade --quiet
+    docker run --rm -v "$PWD":/var/task -w /var/task \
+    public.ecr.aws/lambda/python:3.10 \
+    pip install -r ../requirements.txt -t python
     echo -e "${GREEN}✅ Dependencias instaladas en python-dependencies/python/${NC}"
     
     cd ../..
