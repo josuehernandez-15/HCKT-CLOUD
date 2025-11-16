@@ -2,36 +2,154 @@
 
 set -e  # Salir si hay algún error
 
-echo "============================================================"
-echo "🚀 ALERTA UTEC - SETUP BACKEND"
-echo "============================================================"
-
 # Colores para output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-# Verificar que existe el archivo .env
-if [ ! -f .env ]; then
-    echo -e "${YELLOW}⚠️  Archivo .env no encontrado${NC}"
-    echo "Por favor, copia .env.example a .env y configura tus variables"
-    exit 1
-fi
+# Función para mostrar el menú
+show_menu() {
+    echo "============================================================"
+    echo "🚀 ALERTA UTEC - SETUP BACKEND"
+    echo "============================================================"
+    echo ""
+    echo "Selecciona una opción:"
+    echo ""
+    echo "  1) 🏗️  Desplegar todo (Infraestructura + Microservicios)"
+    echo "  2) 🗑️  Eliminar todo (Microservicios + Infraestructura)"
+    echo "  3) 📊 Solo crear infraestructura y poblar datos"
+    echo "  4) 🚀 Solo desplegar microservicios"
+    echo "  5) ❌ Salir"
+    echo ""
+}
 
-# Cargar variables de entorno
-export $(cat .env | grep -v '^#' | xargs)
+# Función para verificar .env
+check_env() {
+    if [ ! -f .env ]; then
+        echo -e "${YELLOW}⚠️  Archivo .env no encontrado${NC}"
+        echo "Por favor, copia .env.example a .env y configura tus variables"
+        exit 1
+    fi
+    export $(cat .env | grep -v '^#' | xargs)
+}
 
-echo -e "\n${BLUE}🏗️  Paso 1: Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
-cd DataGenerator
-python3 DataPoblator.py
-cd ..
+# Función para crear infraestructura
+deploy_infrastructure() {
+    echo -e "\n${BLUE}🏗️  Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
+    cd DataGenerator
+    python3 DataPoblator.py
+    cd ..
+    echo -e "${GREEN}✅ Infraestructura creada${NC}"
+}
 
-echo -e "\n${GREEN}✅ Setup de infraestructura completado${NC}"
+# Función para desplegar microservicios
+deploy_services() {
+    echo -e "\n${BLUE}🚀 Desplegando microservicios con Serverless Compose...${NC}"
+    sls deploy
+    echo -e "${GREEN}✅ Microservicios desplegados${NC}"
+}
 
-echo -e "\n${BLUE}🚀 Paso 2: Desplegando microservicios con Serverless Compose...${NC}"
-sls deploy
+# Función para eliminar microservicios
+remove_services() {
+    echo -e "\n${RED}🗑️  Eliminando microservicios...${NC}"
+    sls remove
+    echo -e "${GREEN}✅ Microservicios eliminados${NC}"
+}
 
-echo -e "\n${GREEN}============================================================${NC}"
-echo -e "${GREEN}🎉 DESPLIEGUE COMPLETADO EXITOSAMENTE${NC}"
-echo -e "${GREEN}============================================================${NC}"
+# Función para eliminar infraestructura
+remove_infrastructure() {
+    echo -e "\n${RED}🗑️  Eliminando recursos de infraestructura...${NC}"
+    
+    # Eliminar tablas DynamoDB
+    echo -e "${YELLOW}Eliminando tablas DynamoDB...${NC}"
+    aws dynamodb delete-table --table-name ${TABLE_USUARIOS} 2>/dev/null || echo "Tabla ${TABLE_USUARIOS} no existe"
+    aws dynamodb delete-table --table-name ${TABLE_INCIDENTES} 2>/dev/null || echo "Tabla ${TABLE_INCIDENTES} no existe"
+    aws dynamodb delete-table --table-name ${TABLE_EMPLEADOS} 2>/dev/null || echo "Tabla ${TABLE_EMPLEADOS} no existe"
+    aws dynamodb delete-table --table-name ${TABLE_LOGS} 2>/dev/null || echo "Tabla ${TABLE_LOGS} no existe"
+    aws dynamodb delete-table --table-name ${TABLE_CONEXIONES} 2>/dev/null || echo "Tabla ${TABLE_CONEXIONES} no existe"
+    
+    # Eliminar bucket S3
+    echo -e "${YELLOW}Eliminando bucket S3...${NC}"
+    S3_BUCKET="alerta-utec-data-${AWS_ACCOUNT_ID}"
+    aws s3 rm s3://${S3_BUCKET} --recursive 2>/dev/null || echo "Bucket ${S3_BUCKET} no existe"
+    aws s3 rb s3://${S3_BUCKET} 2>/dev/null || echo "Bucket ${S3_BUCKET} no existe"
+    
+    echo -e "${GREEN}✅ Infraestructura eliminada${NC}"
+}
+
+# Función principal
+main() {
+    check_env
+    
+    while true; do
+        show_menu
+        read -p "Opción: " option
+        
+        case $option in
+            1)
+                echo ""
+                echo "============================================================"
+                echo "🏗️  DESPLIEGUE COMPLETO"
+                echo "============================================================"
+                deploy_infrastructure
+                deploy_services
+                echo ""
+                echo -e "${GREEN}============================================================${NC}"
+                echo -e "${GREEN}🎉 DESPLIEGUE COMPLETADO EXITOSAMENTE${NC}"
+                echo -e "${GREEN}============================================================${NC}"
+                break
+                ;;
+            2)
+                echo ""
+                echo "============================================================"
+                echo "🗑️  ELIMINACIÓN COMPLETA"
+                echo "============================================================"
+                echo -e "${RED}⚠️  ADVERTENCIA: Esto eliminará TODOS los recursos${NC}"
+                read -p "¿Estás seguro? (escribe 'SI' para confirmar): " confirm
+                if [ "$confirm" = "SI" ]; then
+                    remove_services
+                    remove_infrastructure
+                    echo ""
+                    echo -e "${GREEN}============================================================${NC}"
+                    echo -e "${GREEN}✅ ELIMINACIÓN COMPLETADA${NC}"
+                    echo -e "${GREEN}============================================================${NC}"
+                else
+                    echo -e "${YELLOW}Operación cancelada${NC}"
+                fi
+                break
+                ;;
+            3)
+                echo ""
+                echo "============================================================"
+                echo "📊 SOLO INFRAESTRUCTURA"
+                echo "============================================================"
+                deploy_infrastructure
+                echo ""
+                echo -e "${GREEN}✅ Listo${NC}"
+                break
+                ;;
+            4)
+                echo ""
+                echo "============================================================"
+                echo "🚀 SOLO MICROSERVICIOS"
+                echo "============================================================"
+                deploy_services
+                echo ""
+                echo -e "${GREEN}✅ Listo${NC}"
+                break
+                ;;
+            5)
+                echo -e "${YELLOW}Saliendo...${NC}"
+                exit 0
+                ;;
+            *)
+                echo -e "${RED}Opción inválida${NC}"
+                ;;
+        esac
+    done
+}
+
+# Ejecutar script
+main
