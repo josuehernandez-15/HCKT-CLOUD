@@ -17,6 +17,7 @@ provider:
     JWT_EXPIRATION_HOURS: ${env:JWT_EXPIRATION_HOURS}
     BREVO_API_KEY: ${env:BREVO_API_KEY}
     EMAIL_FROM: ${env:EMAIL_FROM}
+    LAMBDA_NOTIFY_INCIDENTE: ${cf:alerta-utec-notificaciones-${self:provider.stage}.NotifyIncidenteLambdaArn}
   layers:
     - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerExport}
 

@@ -8,6 +8,8 @@ from decimal import Decimal
 import uuid
 import requests
 
+lambda_client = boto3.client("lambda")
+LAMBDA_NOTIFY_INCIDENTE = os.environ.get("LAMBDA_NOTIFY_INCIDENTE")
 
 dynamodb = boto3.resource('dynamodb')
 table_name = os.environ.get('TABLE_INCIDENTES')
@@ -23,6 +25,34 @@ ADMIN_ESTADOS_PERMITIDOS = ["en_progreso", "resuelto"]
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
 EMAIL_FROM = os.environ.get("EMAIL_FROM", "no-reply@example.com")
 
+
+def _notificar_incidente_ws(tipo, titulo, mensaje, incidente_id, destinatarios=None):
+    """
+    Invoca la Lambda de notificaciones por WebSocket.
+    """
+    if not LAMBDA_NOTIFY_INCIDENTE:
+        print("LAMBDA_NOTIFY_INCIDENTE no configurado, no se envía notificación WS.")
+        return
+
+    payload = {
+        "tipo": tipo,
+        "titulo": titulo,
+        "mensaje": mensaje,
+        "incidente_id": incidente_id,
+    }
+
+    if destinatarios:
+        payload["destinatarios"] = destinatarios
+
+    try:
+        lambda_client.invoke(
+            FunctionName=LAMBDA_NOTIFY_INCIDENTE,
+            InvocationType="Event",
+            Payload=json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        )
+        print("Notificación WS disparada:", payload)
+    except Exception as e:
+        print("Error al invocar notify_incidente:", repr(e))
 
 def _to_dynamodb_numbers(obj):
     """
@@ -338,6 +368,16 @@ def lambda_handler(event, context):
             correo_destino=correo_creador,
             incidente=incidente_nuevo,
             estado_nuevo=estado_nuevo
+        )
+
+        # Notificación en vivo por WebSocket
+        mensaje_notif = f"El incidente {incidente_id} cambió su estado a '{estado_nuevo}'."
+
+        _notificar_incidente_ws(
+            tipo="incidente_actualizado",
+            titulo="Incidente actualizado",
+            mensaje=mensaje_notif,
+            incidente_id=incidente_id,
         )
 
         return {
