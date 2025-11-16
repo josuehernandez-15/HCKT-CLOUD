@@ -76,9 +76,8 @@ def generar_usuarios(cantidad=10):
     for i in range(cantidad):
         nombre = random.choice(NOMBRES)
         usuario = {
-            "usuario_id": str(uuid.uuid4()),
-            "correo": generar_correo(nombre),  # ← Cambiado de "email" a "correo"
-            "contraseña": f"hash_{uuid.uuid4().hex[:16]}",
+            "correo": generar_correo(nombre),
+            "contrasena": f"hash_{uuid.uuid4().hex[:16]}",
             "nombre": nombre,
             "rol": random.choice(roles)
         }
@@ -180,12 +179,11 @@ def generar_conexiones(usuarios, cantidad=12):
     
     for i in range(cantidad):
         fecha_conexion = datetime.now() - timedelta(minutes=random.randint(0, 120))
-        # TTL en segundos (expira en 2 horas desde la conexión)
         expiracion_ttl = int((fecha_conexion + timedelta(hours=2)).timestamp())
         
         conexion = {
             "conexion_id": str(uuid.uuid4()),
-            "usuario_id": random.choice(usuarios)["usuario_id"],
+            "usuario_correo": random.choice(usuarios)["correo"],
             "fecha_conexion": fecha_conexion.isoformat(),
             "expiracion_ttl": expiracion_ttl
         }

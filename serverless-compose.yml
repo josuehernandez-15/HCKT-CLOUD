@@ -14,6 +14,9 @@ services:
   # Microservicio de gestión de usuarios
   usuarios:
     path: Usuarios
+    inputs:
+      stage: ${self:stage}
+      region: ${env:AWS_REGION, 'us-east-1'}
     dependsOn:
       - dependencias
 

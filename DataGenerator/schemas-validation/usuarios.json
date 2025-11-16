@@ -6,7 +6,6 @@
     "partition_key": "correo"
   },
   "properties": {
-    "usuario_id": { "type": "string" },
     "correo": {
       "type": "string",
       "format": "email"
@@ -18,6 +17,6 @@
       "enum": ["estudiante", "personal_administrativo", "autoridad"]
     }
   },
-  "required": ["usuario_id", "correo", "nombre", "rol", "contrasena"],
+  "required": ["correo", "nombre", "rol", "contrasena"],
   "additionalProperties": false
 }

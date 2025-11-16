@@ -31,9 +31,11 @@ package:
 functions:
   authorizer:
     handler: CRUD/Authorizer.lambda_handler
+    name: alerta-utec-usuarios-${sls:stage}-Authorizer
 
   crear:
     handler: CRUD/CrearUsuario.lambda_handler
+    name: alerta-utec-usuarios-${sls:stage}-CrearUsuario
     events:
       - http:
           path: usuario/crear
@@ -43,6 +45,7 @@ functions:
 
   login:
     handler: CRUD/LoginUsuario.lambda_handler
+    name: alerta-utec-usuarios-${sls:stage}-LoginUsuario
     events:
       - http:
           path: usuario/login
@@ -52,9 +55,10 @@ functions:
 
   obtenerMiInfo:
     handler: CRUD/MiUsuario.lambda_handler
+    name: alerta-utec-usuarios-${sls:stage}-MiUsuario
     events:
       - http:
-          path: usuario/mi-info
+          path: usuario/mi
           method: get
           cors: true
           authorizer:
@@ -65,6 +69,7 @@ functions:
 
   modificar:
     handler: CRUD/ModificarUsuario.lambda_handler
+    name: alerta-utec-usuarios-${sls:stage}-ModificarUsuario
     events:
       - http:
           path: usuario/modificar
@@ -78,6 +83,7 @@ functions:
 
   eliminar:
     handler: CRUD/EliminarUsuario.lambda_handler
+    name: alerta-utec-usuarios-${sls:stage}-EliminarUsuario
     events:
       - http:
           path: usuario/eliminar

@@ -37,7 +37,7 @@ DATA_DIR = "example-data"
 TABLE_MAPPING = {
     "usuarios.json": {
         "table_name": TABLE_USUARIOS,
-        "pk": "usuario_id",
+        "pk": "correo",
         "sk": None
     },
     "incidentes.json": {
@@ -420,16 +420,10 @@ def create_all_resources():
     # Crear tabla de Usuarios
     if not create_dynamodb_table(
         table_name=TABLE_USUARIOS,
-        key_schema=[{'AttributeName': 'usuario_id', 'KeyType': 'HASH'}],
+        key_schema=[{'AttributeName': 'correo', 'KeyType': 'HASH'}],
         attribute_definitions=[
-            {'AttributeName': 'usuario_id', 'AttributeType': 'S'},
-            {'AttributeName': 'correo', 'AttributeType': 'S'}  # ← Cambiado a 'correo'
-        ],
-        global_secondary_indexes=[{
-            'IndexName': 'EmailIndex',
-            'KeySchema': [{'AttributeName': 'correo', 'KeyType': 'HASH'}],  # ← Cambiado a 'correo'
-            'Projection': {'ProjectionType': 'ALL'}
-        }]
+            {'AttributeName': 'correo', 'AttributeType': 'S'}
+        ]
     ):
         return False
     
@@ -491,11 +485,11 @@ def create_all_resources():
         key_schema=[{'AttributeName': 'conexion_id', 'KeyType': 'HASH'}],
         attribute_definitions=[
             {'AttributeName': 'conexion_id', 'AttributeType': 'S'},
-            {'AttributeName': 'usuario_id', 'AttributeType': 'S'}
+            {'AttributeName': 'usuario_correo', 'AttributeType': 'S'}
         ],
         global_secondary_indexes=[{
-            'IndexName': 'UsuarioIndex',
-            'KeySchema': [{'AttributeName': 'usuario_id', 'KeyType': 'HASH'}],
+            'IndexName': 'UsuarioCorreoIndex',
+            'KeySchema': [{'AttributeName': 'usuario_correo', 'KeyType': 'HASH'}],
             'Projection': {'ProjectionType': 'ALL'}
         }],
         ttl_attribute='ttl'
