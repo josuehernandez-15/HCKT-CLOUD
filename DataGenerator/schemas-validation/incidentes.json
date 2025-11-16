@@ -42,7 +42,7 @@
       "enum": ["reportado", "en_progreso", "resuelto"]
     },
 
-    "usuario_id": { "type": "string" },
+    "usuario_correo": { "type": "string" },
 
     "creado_en": { "type": "string", "format": "date-time" },
     "actualizado_en": { "type": "string", "format": "date-time" }
@@ -57,7 +57,7 @@
     "piso",
     "ubicacion",
     "estado",
-    "usuario_id",
+    "usuario_correo",
     "creado_en"
   ],
 

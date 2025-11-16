@@ -7,6 +7,7 @@ import boto3
 import os
 from pathlib import Path
 from decimal import Decimal
+import cfnresponse
 
 # Cliente DynamoDB
 dynamodb = boto3.resource('dynamodb')
@@ -55,9 +56,70 @@ def poblar_tabla(tabla_nombre, datos):
     return len(datos)
 
 
+def poblar_datos_custom_resource(event, context):
+    """
+    Custom Resource para poblar datos automáticamente al crear el stack
+    """
+    print(f"Evento recibido: {json.dumps(event)}")
+    
+    try:
+        request_type = event['RequestType']
+        
+        # Solo poblar en Create, ignorar en Update y Delete
+        if request_type == 'Create':
+            resultados = {}
+            
+            # Poblar cada tabla
+            for nombre, tabla in TABLES.items():
+                if not tabla:
+                    resultados[nombre] = {
+                        'status': 'skipped',
+                        'mensaje': f'Variable de entorno TABLE_{nombre.upper()} no definida'
+                    }
+                    continue
+                
+                try:
+                    archivo = f"{nombre}.json"
+                    datos = cargar_datos_json(archivo)
+                    cantidad = poblar_tabla(tabla, datos)
+                    
+                    resultados[nombre] = {
+                        'status': 'success',
+                        'tabla': tabla,
+                        'registros_insertados': cantidad
+                    }
+                    print(f"✅ {nombre}: {cantidad} registros insertados en {tabla}")
+                except Exception as e:
+                    resultados[nombre] = {
+                        'status': 'error',
+                        'tabla': tabla,
+                        'mensaje': str(e)
+                    }
+                    print(f"❌ Error en {nombre}: {str(e)}")
+            
+            # Enviar respuesta de éxito a CloudFormation
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, {
+                'Message': 'Datos poblados exitosamente',
+                'Resultados': json.dumps(resultados)
+            })
+        
+        elif request_type in ['Update', 'Delete']:
+            # No hacer nada en Update o Delete
+            print(f"RequestType '{request_type}' - No se requiere acción")
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, {
+                'Message': f'{request_type} - Sin acción requerida'
+            })
+    
+    except Exception as e:
+        print(f"❌ Error crítico: {str(e)}")
+        cfnresponse.send(event, context, cfnresponse.FAILED, {
+            'Message': str(e)
+        })
+
+
 def poblar_datos(event, context):
     """
-    Función Lambda principal para poblar todas las tablas con datos de ejemplo
+    Función Lambda para poblar todas las tablas con datos de ejemplo (Manual via HTTP)
     """
     try:
         resultados = {}

@@ -16,15 +16,11 @@ provider:
     TABLE_CONEXIONES: ${env:TABLE_CONEXIONES}
 
 functions:
-  # Función para poblar las tablas con datos de ejemplo
-  poblarDatos:
-    handler: handler.poblar_datos
-    description: Carga datos de ejemplo desde los archivos JSON a las tablas DynamoDB
-    events:
-      - http:
-          path: /poblar-datos
-          method: post
-          cors: true
+  # Función Custom Resource para población automática
+  poblarDatosAuto:
+    handler: handler.poblar_datos_custom_resource
+    description: Población automática de datos al crear el stack
+    timeout: 300
 
 resources:
   Resources:
@@ -211,6 +207,50 @@ resources:
           - Key: Entorno
             Value: dev
 
+    # ============================================================
+    # S3 BUCKET: EVIDENCIAS DE INCIDENTES
+    # ============================================================
+    IncidentesEvidenciasBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:INCIDENTES_BUCKET, 'alerta-utec-incidentes-evidencias'}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+              AllowedHeaders:
+                - '*'
+        Tags:
+          - Key: Proyecto
+            Value: AlertaUTEC
+          - Key: Entorno
+            Value: dev
+
+    # ============================================================
+    # CUSTOM RESOURCE: POBLACIÓN AUTOMÁTICA DE DATOS
+    # ============================================================
+    PoblarDatosCustomResource:
+      Type: Custom::PoblarDatos
+      DependsOn:
+        - UsuariosTable
+        - IncidentesTable
+        - EmpleadosTable
+        - LogsTable
+        - ConexionesTable
+        - IncidentesEvidenciasBucket
+      Properties:
+        ServiceToken: !GetAtt PoblarDatosAutoLambdaFunction.Arn
+        Timestamp: !Ref AWS::StackId
+
   Outputs:
     UsuariosTableName:
       Value: !Ref UsuariosTable
@@ -261,3 +301,13 @@ resources:
       Value: !GetAtt ConexionesTable.Arn
       Export:
         Name: ${self:service}-ConexionesTableArn
+    
+    IncidentesBucketName:
+      Value: !Ref IncidentesEvidenciasBucket
+      Export:
+        Name: ${self:service}-IncidentesBucket
+    
+    IncidentesBucketArn:
+      Value: !GetAtt IncidentesEvidenciasBucket.Arn
+      Export:
+        Name: ${self:service}-IncidentesBucketArn
