@@ -12,13 +12,93 @@ provider:
     TABLE_INCIDENTES: ${env:TABLE_INCIDENTES}
     TABLE_LOGS: ${env:TABLE_LOGS}
     TABLE_EMPLEADOS: ${env:TABLE_EMPLEADOS}
-  
   layers:
     - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerExport}
 
-functions:
-  # TODO: Implementar funciones Lambda
-  placeholder:
-    handler: handler.placeholder
-    description: Función placeholder hasta implementar el microservicio
+functions: {}
+
+resources:
+  Resources:
+    AnaliticaAirflowLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /ecs/alerta-utec-airflow
+        RetentionInDays: 14
+
+    AnaliticaAirflowCluster:
+      Type: AWS::ECS::Cluster
+      Properties:
+        ClusterName: alerta-utec-analitica-cluster
+
+    AnaliticaAirflowSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Acceso saliente para Airflow
+        VpcId: ${env:ANALITICA_VPC_ID}
+        SecurityGroupEgress:
+          - IpProtocol: "-1"
+            CidrIp: 0.0.0.0/0
+
+    AnaliticaAirflowTaskDefinition:
+      Type: AWS::ECS::TaskDefinition
+      Properties:
+        Family: alerta-utec-analitica-airflow
+        Cpu: "1024"
+        Memory: "2048"
+        NetworkMode: awsvpc
+        RequiresCompatibilities:
+          - FARGATE
+        ExecutionRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
+        TaskRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
+        ContainerDefinitions:
+          - Name: airflow
+            Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/alerta-utec-airflow:latest
+            Essential: true
+            PortMappings:
+              - ContainerPort: 8080
+            LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-group: /ecs/alerta-utec-airflow
+                awslogs-region: ${env:AWS_REGION, 'us-east-1'}
+                awslogs-stream-prefix: airflow
+            Environment:
+              - Name: AWS_REGION
+                Value: ${env:AWS_REGION, 'us-east-1'}
+              - Name: AWS_ACCOUNT_ID
+                Value: !Sub ${AWS::AccountId}
+              - Name: ANALITICA_TABLES
+                Value: ${env:ANALITICA_TABLES}
+              - Name: ANALITICA_S3_BUCKET
+                Value: ${env:ANALITICA_S3_BUCKET}
+              - Name: ANALITICA_GLUE_DATABASE
+                Value: ${env:ANALITICA_GLUE_DATABASE}
+              - Name: ANALITICA_GLUE_CRAWLER
+                Value: ${env:ANALITICA_GLUE_CRAWLER}
+              - Name: ANALITICA_GLUE_ROLE_NAME
+                Value: ${env:ANALITICA_GLUE_ROLE_NAME, 'GlueCrawlerRole'}
+
+    AnaliticaAirflowService:
+      Type: AWS::ECS::Service
+      Properties:
+        ServiceName: alerta-utec-analitica-airflow
+        Cluster: !Ref AnaliticaAirflowCluster
+        LaunchType: FARGATE
+        DesiredCount: 1
+        TaskDefinition: !Ref AnaliticaAirflowTaskDefinition
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            AssignPublicIp: ENABLED
+            Subnets:
+              Fn::Split:
+                - ","
+                - ${env:ANALITICA_SUBNETS}
+            SecurityGroups:
+              - !Ref AnaliticaAirflowSecurityGroup
+
+  Outputs:
+    AnaliticaAirflowServiceName:
+      Value: !Ref AnaliticaAirflowService
+      Export:
+        Name: alerta-utec-analitica-airflow-service
 
