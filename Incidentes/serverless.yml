@@ -4,27 +4,72 @@ provider:
   name: aws
   runtime: python3.13
   region: us-east-1
+  stage: ${opt:stage, 'dev'} 
   memorySize: 256
   timeout: 30
   iam:
     role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
   environment:
     TABLE_INCIDENTES: ${env:TABLE_INCIDENTES}
-    TABLE_USUARIOS: ${env:TABLE_USUARIOS}
-    TABLE_EMPLEADOS: ${env:TABLE_EMPLEADOS}
+    INCIDENTES_BUCKET: ${env:INCIDENTES_BUCKET, 'alerta-utec-incidentes-evidencias'}
+    JWT_SECRET: ${env:JWT_SECRET}
+    JWT_EXPIRATION_HOURS: ${env:JWT_EXPIRATION_HOURS}
   
   layers:
-    - ${cf:alerta-utec-dependencias-dev.AlertaUTECPythonDependenciesLayer}
+    - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerExport}
+  
+  httpApi:
+    cors: true
 
 functions:
-  # TODO: Implementar funciones Lambda
-  # - crearIncidente
-  # - obtenerIncidente
-  # - listarIncidentes
-  # - actualizarIncidente
-  # - asignarEmpleado
-  # - cambiarEstado
-  placeholder:
-    handler: handler.placeholder
-    description: Función placeholder hasta implementar el microservicio
+  CreateIncidente:
+    handler: handler.crear_incidente
+    description: Crea un nuevo incidente
+    events:
+      - httpApi:
+          method: POST
+          path: /incidentes
+          cors: true
+    
+  UpdateIncidenteUsuario: 
+    handler: handler.actualizar_incidente_usuario
+    description: Actualiza un incidente (usuario)
+    events:
+      - httpApi:
+          method: PUT
+          path: /incidentes/{incidente_id}
+          cors: true
 
+  UpdateIncidenteAdmin: 
+    handler: handler.actualizar_incidente_admin
+    description: Actualiza el estado de un incidente (admin)
+    events:
+      - httpApi:
+          method: PATCH
+          path: /incidentes/{incidente_id}/estado
+          cors: true
+
+  SearchIncidente:
+    handler: handler.buscar_incidente
+    description: Busca un incidente por ID
+    events:
+      - httpApi:
+          method: GET 
+          path: /incidentes/{incidente_id}
+          cors: true
+
+  ListIncidentes:
+    handler: handler.listar_incidentes
+    description: Lista incidentes con paginación
+    events:
+      - httpApi:
+          method: GET
+          path: /incidentes
+          cors: true
+
+resources:
+  Outputs:
+    IncidentesApiUrl:
+      Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com
+      Export:
+        Name: ${self:service}-ApiUrl

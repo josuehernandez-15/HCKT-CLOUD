@@ -1,4 +1,3 @@
-
 import json
 import uuid
 from datetime import datetime, timedelta
@@ -114,7 +113,7 @@ def generar_empleados(cantidad=8):
 def generar_incidentes(usuarios, cantidad=15):
     """Genera datos de ejemplo para incidentes"""
     incidentes = []
-    tipos = ["seguridad", "mantenimiento", "otro"]
+    tipos = ["limpieza", "TI", "seguridad", "mantenimiento", "otro"]
     niveles_urgencia = ["bajo", "medio", "alto", "critico"]
     estados = ["reportado", "en_progreso", "resuelto"]
     
@@ -137,7 +136,7 @@ def generar_incidentes(usuarios, cantidad=15):
                 f"https://storage.example.com/evidencias/{uuid.uuid4()}.jpg"
             ] if random.random() > 0.3 else [],
             "estado": random.choice(estados),
-            "usuario_id": random.choice(usuarios)["usuario_id"],
+            "usuario_correo": random.choice(usuarios)["correo"],
             "creado_en": creado_en.isoformat()
         }
         

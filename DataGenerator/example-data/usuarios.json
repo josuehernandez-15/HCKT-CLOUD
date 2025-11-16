@@ -1,72 +1,72 @@
 [
   {
-    "usuario_id": "27a5994c-6fbf-4b49-ba74-d4d58e5df5d6",
-    "correo": "andrés.silva@gmail.com",
-    "contraseña": "hash_47a54a4babe24a04",
-    "nombre": "Andrés Silva",
-    "rol": "autoridad"
-  },
-  {
-    "usuario_id": "05d5782b-7b24-4764-a456-a1c356ea4556",
-    "correo": "carlos.lópez@outlook.com",
-    "contraseña": "hash_7de6ecf2060c44b4",
-    "nombre": "Carlos López",
-    "rol": "autoridad"
-  },
-  {
-    "usuario_id": "e8330d0a-9787-42ca-a8c9-b2ec0361ae66",
-    "correo": "maría.garcía@outlook.com",
-    "contraseña": "hash_069c287ab0164087",
-    "nombre": "María García",
-    "rol": "estudiante"
-  },
-  {
-    "usuario_id": "90f47d30-8c25-4e9c-90c9-d712c49ba972",
-    "correo": "carlos.lópez@outlook.com",
-    "contraseña": "hash_c5c85ebab12f439f",
-    "nombre": "Carlos López",
-    "rol": "autoridad"
-  },
-  {
-    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
-    "correo": "laura.sánchez@gmail.com",
-    "contraseña": "hash_f59a4069ddd44108",
-    "nombre": "Laura Sánchez",
-    "rol": "autoridad"
-  },
-  {
-    "usuario_id": "795b6ffd-803c-48b3-ba0e-ace9a9be4558",
-    "correo": "laura.sánchez@outlook.com",
-    "contraseña": "hash_eaa0ddc59d5e423a",
-    "nombre": "Laura Sánchez",
-    "rol": "personal_administrativo"
-  },
-  {
-    "usuario_id": "83974084-7cec-4e11-a206-519a04397271",
-    "correo": "carlos.lópez@outlook.com",
-    "contraseña": "hash_e5f165bd1bc947e8",
-    "nombre": "Carlos López",
-    "rol": "estudiante"
-  },
-  {
-    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
-    "correo": "valentina.ortiz@outlook.com",
-    "contraseña": "hash_b6dc65ab1dd54cfa",
-    "nombre": "Valentina Ortiz",
-    "rol": "estudiante"
-  },
-  {
-    "usuario_id": "46c012d5-5dda-44d7-9196-395d8ca8202d",
-    "correo": "camila.rojas@utec.edu.pe",
-    "contraseña": "hash_7225b0f64f5a4751",
+    "usuario_id": "587afc36-cb80-4cee-be07-6bff4fb96436",
+    "correo": "camila.rojas@outlook.com",
+    "contraseña": "hash_0b351f5c609f49f4",
     "nombre": "Camila Rojas",
     "rol": "personal_administrativo"
   },
   {
-    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
-    "correo": "carlos.lópez@gmail.com",
-    "contraseña": "hash_e5197a5d585c4482",
-    "nombre": "Carlos López",
+    "usuario_id": "10a9700c-76fb-4edd-9869-641c86e4a416",
+    "correo": "isabel.ramírez@gmail.com",
+    "contraseña": "hash_6dab0d0cb124489f",
+    "nombre": "Isabel Ramírez",
+    "rol": "estudiante"
+  },
+  {
+    "usuario_id": "91ce8ccb-2c3d-4e6d-8473-961fd77dd845",
+    "correo": "camila.rojas@outlook.com",
+    "contraseña": "hash_985d0841465b4985",
+    "nombre": "Camila Rojas",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "fbc1f17a-7bac-426b-b6dc-5c03966f03eb",
+    "correo": "diego.morales@utec.edu.pe",
+    "contraseña": "hash_3f9db61fb03c4e05",
+    "nombre": "Diego Morales",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "ed487f36-0093-4286-987c-83b4aa93abf7",
+    "correo": "maría.garcía@gmail.com",
+    "contraseña": "hash_0b4e495d012f4143",
+    "nombre": "María García",
     "rol": "personal_administrativo"
+  },
+  {
+    "usuario_id": "01b9ced3-43f4-4cff-a363-5cc319944f3c",
+    "correo": "sofía.castro@outlook.com",
+    "contraseña": "hash_456131b8506e45ce",
+    "nombre": "Sofía Castro",
+    "rol": "personal_administrativo"
+  },
+  {
+    "usuario_id": "f318768f-611e-4acb-baad-f4410f9a1c70",
+    "correo": "ana.martínez@utec.edu.pe",
+    "contraseña": "hash_778959d59e0646a8",
+    "nombre": "Ana Martínez",
+    "rol": "personal_administrativo"
+  },
+  {
+    "usuario_id": "50ab0a8d-a77e-421b-b713-e60b1b00485e",
+    "correo": "josé.gonzález@utec.edu.pe",
+    "contraseña": "hash_0fd03d917bab4781",
+    "nombre": "José González",
+    "rol": "personal_administrativo"
+  },
+  {
+    "usuario_id": "e8f181c6-9479-4bc8-aa36-e53494557c43",
+    "correo": "isabel.ramírez@utec.edu.pe",
+    "contraseña": "hash_03b1e5972e434d7f",
+    "nombre": "Isabel Ramírez",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "5e37b837-847c-458c-969d-e76b54cb1bd1",
+    "correo": "juan.pérez@gmail.com",
+    "contraseña": "hash_ebae4e99d8b74e62",
+    "nombre": "Juan Pérez",
+    "rol": "autoridad"
   }
 ]
