@@ -507,11 +507,6 @@ def create_all_resources():
 
 
 def main():
-    """Función principal"""
-    print("=" * 60)
-    print("🚀 ALERTA UTEC - DATA POBLATOR")
-    print("=" * 60)
-
     if not verify_credentials():
         return
 

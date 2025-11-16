@@ -37,7 +37,6 @@ check_env() {
 
 # Función para crear infraestructura
 deploy_infrastructure() {
-    echo -e "\n${BLUE}🏗️  Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
     cd DataGenerator
     python3 DataPoblator.py
     cd ..
