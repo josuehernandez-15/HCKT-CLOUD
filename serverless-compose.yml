@@ -6,28 +6,36 @@ org: ${env:ORG_NAME}
 app: alerta-utec-backend
 stage: dev
 
+# Configurar bucket S3 para el estado de Compose (sin SSM)
+state:
+  backend: s3
+  bucket: alerta-utec-serverless-state-227702538112
+  region: us-east-1
+
 services:
   # Capa compartida con dependencias Python
   dependencias:
     path: Dependencias
-    hooks:
-      # Hook para crear tablas y poblar datos después de desplegar dependencias
-      after:deploy:finalize: |
-        echo "📊 Creando infraestructura y poblando datos..."
-        cd DataGenerator
-        python3 DataPoblator.py
+
+  # Infraestructura: Tablas DynamoDB y S3
+  infraestructura:
+    path: DataGenerator
+    dependsOn:
+      - dependencias
 
   # Microservicio de gestión de usuarios
   usuarios:
     path: Usuarios
     dependsOn:
       - dependencias
+      - infraestructura
 
   # Microservicio de gestión de incidentes
   incidentes:
     path: Incidentes
     dependsOn:
       - dependencias
+      - infraestructura
       - usuarios
 
   # Microservicio de analítica
@@ -35,5 +43,6 @@ services:
     path: Analitica
     dependsOn:
       - dependencias
+      - infraestructura
       - incidentes
 

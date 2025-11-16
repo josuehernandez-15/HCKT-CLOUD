@@ -1,0 +1,227 @@
+service: alerta-utec-infraestructura
+
+provider:
+  name: aws
+  runtime: python3.13
+  region: us-east-1
+  memorySize: 512
+  timeout: 60
+  iam:
+    role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
+  environment:
+    TABLE_USUARIOS: ${env:TABLE_USUARIOS}
+    TABLE_INCIDENTES: ${env:TABLE_INCIDENTES}
+    TABLE_LOGS: ${env:TABLE_LOGS}
+    TABLE_EMPLEADOS: ${env:TABLE_EMPLEADOS}
+    TABLE_CONEXIONES: ${env:TABLE_CONEXIONES}
+    S3_BUCKET_NAME: alerta-utec-data-${aws:accountId}
+  
+  layers:
+    - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerExport}
+
+functions:
+  placeholder:
+    handler: handler.placeholder
+    description: Función placeholder hasta implementar el microservicio
+
+resources:
+  Resources:
+    # Bucket S3 para datos
+    AlertaUtecDataBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: alerta-utec-data-${aws:accountId}
+        VersioningConfiguration:
+          Status: Enabled
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        Tags:
+          - Key: Project
+            Value: alerta-utec
+          - Key: Environment
+            Value: ${sls:stage}
+
+    # Tabla de Usuarios
+    UsuariosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:TABLE_USUARIOS}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: usuario_id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: usuario_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: EmailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        Tags:
+          - Key: Project
+            Value: alerta-utec
+
+    # Tabla de Incidentes
+    IncidentesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:TABLE_INCIDENTES}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: incidente_id
+            AttributeType: S
+          - AttributeName: fecha_reporte
+            AttributeType: S
+          - AttributeName: estado
+            AttributeType: S
+        KeySchema:
+          - AttributeName: incidente_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: EstadoIndex
+            KeySchema:
+              - AttributeName: estado
+                KeyType: HASH
+              - AttributeName: fecha_reporte
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        Tags:
+          - Key: Project
+            Value: alerta-utec
+
+    # Tabla de Empleados
+    EmpleadosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:TABLE_EMPLEADOS}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: empleado_id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: empleado_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: EmailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        Tags:
+          - Key: Project
+            Value: alerta-utec
+
+    # Tabla de Logs
+    LogsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:TABLE_LOGS}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: log_id
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: log_id
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        Tags:
+          - Key: Project
+            Value: alerta-utec
+
+    # Tabla de Conexiones WebSocket
+    ConexionesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:TABLE_CONEXIONES}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: conexion_id
+            AttributeType: S
+          - AttributeName: usuario_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: conexion_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UsuarioIndex
+            KeySchema:
+              - AttributeName: usuario_id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+        Tags:
+          - Key: Project
+            Value: alerta-utec
+
+  Outputs:
+    DataBucketName:
+      Description: Nombre del bucket S3 para datos
+      Value: !Ref AlertaUtecDataBucket
+      Export:
+        Name: ${self:service}-${sls:stage}-DataBucketName
+    
+    DataBucketArn:
+      Description: ARN del bucket S3 para datos
+      Value: !GetAtt AlertaUtecDataBucket.Arn
+      Export:
+        Name: ${self:service}-${sls:stage}-DataBucketArn
+
+    UsuariosTableName:
+      Description: Nombre de la tabla de Usuarios
+      Value: !Ref UsuariosTable
+      Export:
+        Name: ${self:service}-${sls:stage}-UsuariosTable
+
+    IncidentesTableName:
+      Description: Nombre de la tabla de Incidentes
+      Value: !Ref IncidentesTable
+      Export:
+        Name: ${self:service}-${sls:stage}-IncidentesTable
+
+    EmpleadosTableName:
+      Description: Nombre de la tabla de Empleados
+      Value: !Ref EmpleadosTable
+      Export:
+        Name: ${self:service}-${sls:stage}-EmpleadosTable
+
+    LogsTableName:
+      Description: Nombre de la tabla de Logs
+      Value: !Ref LogsTable
+      Export:
+        Name: ${self:service}-${sls:stage}-LogsTable
+
+    ConexionesTableName:
+      Description: Nombre de la tabla de Conexiones WebSocket
+      Value: !Ref ConexionesTable
+      Export:
+        Name: ${self:service}-${sls:stage}-ConexionesTable
+
+hooks:
+  after:deploy:finalize:
+    - echo "📊 Poblando datos en las tablas DynamoDB..."
+    - python3 DataPoblator.py
+    - echo "✅ Población de datos completada"
+

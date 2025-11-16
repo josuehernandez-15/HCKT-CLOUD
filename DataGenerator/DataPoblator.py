@@ -47,8 +47,8 @@ TABLE_MAPPING = {
     },
     "logs.json": {
         "table_name": TABLE_LOGS,
-        "pk": "registro_id",
-        "sk": None
+        "pk": "log_id",
+        "sk": "timestamp"
     },
     "conexiones.json": {
         "table_name": TABLE_CONEXIONES,
