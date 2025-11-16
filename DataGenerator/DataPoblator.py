@@ -143,12 +143,14 @@ def batch_write_items(table, items, table_name):
     total_items = len(items)
     batch_size = 25
     count_lock = Lock()
+    error_details = []
     
     batches = [items[i:i + batch_size] for i in range(0, total_items, batch_size)]
     
     def process_batch_with_retry(batch, max_retries=5):
         local_success = 0
         local_errors = 0
+        local_error_details = []
         
         for attempt in range(max_retries):
             try:
@@ -162,8 +164,12 @@ def batch_write_items(table, items, table_name):
                                 raise
                             else:
                                 local_errors += 1
+                                local_error_details.append({
+                                    'item': str(item)[:100],
+                                    'error': str(e)
+                                })
                 
-                return local_success, local_errors
+                return local_success, local_errors, local_error_details
                 
             except ClientError as e:
                 if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
@@ -172,12 +178,17 @@ def batch_write_items(table, items, table_name):
                         time.sleep(wait_time)
                         local_success = 0
                         local_errors = 0
+                        local_error_details = []
                         continue
                 else:
                     local_errors += len(batch)
-                    return 0, local_errors
+                    local_error_details.append({
+                        'batch_size': len(batch),
+                        'error': str(e)
+                    })
+                    return 0, local_errors, local_error_details
         
-        return local_success, local_errors
+        return local_success, local_errors, local_error_details
     
     try:
         num_threads = min(10, len(batches))
@@ -187,10 +198,11 @@ def batch_write_items(table, items, table_name):
             
             for future in as_completed(futures):
                 try:
-                    local_success, local_errors = future.result()
+                    local_success, local_errors, local_error_details = future.result()
                     with count_lock:
                         success_count += local_success
                         error_count += local_errors
+                        error_details.extend(local_error_details)
                         
                         if (success_count % 100 == 0) or (success_count + error_count >= total_items):
                             porcentaje = ((success_count + error_count) / total_items) * 100
@@ -199,12 +211,22 @@ def batch_write_items(table, items, table_name):
                 except Exception as e:
                     with count_lock:
                         error_count += len(futures[future])
+                        error_details.append({
+                            'batch': 'unknown',
+                            'error': str(e)
+                        })
     
     except Exception as e:
         print(f"   ❌ Error: {str(e)}")
-        return success_count, total_items - success_count
+        return success_count, total_items - success_count, error_details
     
-    return success_count, error_count
+    # Mostrar detalles de errores si los hay
+    if error_details and len(error_details) <= 5:
+        print(f"\n   ⚠️  Detalles de errores:")
+        for i, err in enumerate(error_details[:5], 1):
+            print(f"      {i}. {err.get('error', 'Error desconocido')[:200]}")
+    
+    return success_count, error_count, error_details
 
 
 def populate_table(filename, table_config):
@@ -238,9 +260,19 @@ def populate_table(filename, table_config):
     
     print(f"   📊 Total de items: {len(items)}")
     
+    # Validar que los items tengan las claves requeridas
+    if items:
+        first_item = items[0]
+        if pk_name not in first_item:
+            print(f"   ❌ Error: Los items no tienen la clave primaria '{pk_name}'")
+            return False
+        if sk_name and sk_name not in first_item:
+            print(f"   ❌ Error: Los items no tienen la clave de ordenamiento '{sk_name}'")
+            return False
+    
     try:
         table = dynamodb.Table(table_name)
-        success_count, error_count = batch_write_items(table, items, table_name)
+        success_count, error_count, error_details = batch_write_items(table, items, table_name)
         
         print(f"   ✅ Insertados: {success_count} items")
         if error_count > 0:

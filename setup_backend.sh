@@ -22,17 +22,14 @@ fi
 # Cargar variables de entorno
 export $(cat .env | grep -v '^#' | xargs)
 
-echo -e "\n${BLUE}📦 Paso 1: Instalando dependencias de Python para DataPoblator...${NC}"
-pip3 install -q boto3 python-dotenv
-
-echo -e "\n${BLUE}🏗️  Paso 2: Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
+echo -e "\n${BLUE}🏗️  Paso 1: Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
 cd DataGenerator
 python3 DataPoblator.py
 cd ..
 
 echo -e "\n${GREEN}✅ Setup de infraestructura completado${NC}"
 
-echo -e "\n${BLUE}🚀 Paso 3: Desplegando microservicios con Serverless Compose...${NC}"
+echo -e "\n${BLUE}🚀 Paso 2: Desplegando microservicios con Serverless Compose...${NC}"
 sls deploy
 
 echo -e "\n${GREEN}============================================================${NC}"
