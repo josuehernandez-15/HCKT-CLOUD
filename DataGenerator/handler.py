@@ -7,7 +7,7 @@ import boto3
 import os
 from pathlib import Path
 from decimal import Decimal
-import cfnresponse
+import urllib3
 
 # Cliente DynamoDB
 dynamodb = boto3.resource('dynamodb')
@@ -24,6 +24,42 @@ TABLES = {
 # Directorio de datos de ejemplo
 DATA_DIR = Path(__file__).parent / "example-data"
 
+# HTTP client para respuestas de CloudFormation
+http = urllib3.PoolManager()
+
+
+def send_cfn_response(event, context, response_status, response_data):
+    """
+    Envía respuesta a CloudFormation Custom Resource
+    """
+    response_body = {
+        'Status': response_status,
+        'Reason': f'See CloudWatch Log Stream: {context.log_stream_name}',
+        'PhysicalResourceId': context.log_stream_name,
+        'StackId': event['StackId'],
+        'RequestId': event['RequestId'],
+        'LogicalResourceId': event['LogicalResourceId'],
+        'Data': response_data
+    }
+    
+    json_response = json.dumps(response_body)
+    
+    headers = {
+        'content-type': '',
+        'content-length': str(len(json_response))
+    }
+    
+    try:
+        response = http.request(
+            'PUT',
+            event['ResponseURL'],
+            body=json_response,
+            headers=headers
+        )
+        print(f"CloudFormation response status: {response.status}")
+    except Exception as e:
+        print(f"Error sending response to CloudFormation: {e}")
+
 
 def decimal_converter(obj):
     """Convierte float a Decimal para DynamoDB"""
@@ -39,6 +75,7 @@ def decimal_converter(obj):
 def cargar_datos_json(archivo):
     """Carga datos desde un archivo JSON"""
     ruta = DATA_DIR / archivo
+    print(f"Cargando datos desde: {ruta}")
     with open(ruta, 'r', encoding='utf-8') as f:
         datos = json.load(f)
         # Convertir floats a Decimal para DynamoDB
@@ -48,11 +85,13 @@ def cargar_datos_json(archivo):
 def poblar_tabla(tabla_nombre, datos):
     """Puebla una tabla DynamoDB con los datos proporcionados"""
     tabla = dynamodb.Table(tabla_nombre)
+    print(f"Poblando tabla {tabla_nombre} con {len(datos)} registros...")
     
     with tabla.batch_writer() as batch:
         for item in datos:
             batch.put_item(Item=item)
     
+    print(f"✅ Tabla {tabla_nombre} poblada con {len(datos)} registros")
     return len(datos)
 
 
@@ -69,12 +108,17 @@ def poblar_datos_custom_resource(event, context):
         if request_type == 'Create':
             resultados = {}
             
+            # Esperar un momento para que las tablas estén completamente creadas
+            import time
+            time.sleep(5)
+            
             # Poblar cada tabla
             for nombre, tabla in TABLES.items():
                 if not tabla:
+                    print(f"⚠️  Variable de entorno TABLE_{nombre.upper()} no definida")
                     resultados[nombre] = {
                         'status': 'skipped',
-                        'mensaje': f'Variable de entorno TABLE_{nombre.upper()} no definida'
+                        'mensaje': f'Variable de entorno no definida'
                     }
                     continue
                 
@@ -88,17 +132,16 @@ def poblar_datos_custom_resource(event, context):
                         'tabla': tabla,
                         'registros_insertados': cantidad
                     }
-                    print(f"✅ {nombre}: {cantidad} registros insertados en {tabla}")
                 except Exception as e:
+                    print(f"❌ Error poblando {nombre}: {str(e)}")
                     resultados[nombre] = {
                         'status': 'error',
                         'tabla': tabla,
                         'mensaje': str(e)
                     }
-                    print(f"❌ Error en {nombre}: {str(e)}")
             
-            # Enviar respuesta de éxito a CloudFormation
-            cfnresponse.send(event, context, cfnresponse.SUCCESS, {
+            # Enviar respuesta de éxito
+            send_cfn_response(event, context, 'SUCCESS', {
                 'Message': 'Datos poblados exitosamente',
                 'Resultados': json.dumps(resultados)
             })
@@ -106,13 +149,15 @@ def poblar_datos_custom_resource(event, context):
         elif request_type in ['Update', 'Delete']:
             # No hacer nada en Update o Delete
             print(f"RequestType '{request_type}' - No se requiere acción")
-            cfnresponse.send(event, context, cfnresponse.SUCCESS, {
+            send_cfn_response(event, context, 'SUCCESS', {
                 'Message': f'{request_type} - Sin acción requerida'
             })
     
     except Exception as e:
         print(f"❌ Error crítico: {str(e)}")
-        cfnresponse.send(event, context, cfnresponse.FAILED, {
+        import traceback
+        traceback.print_exc()
+        send_cfn_response(event, context, 'FAILED', {
             'Message': str(e)
         })
 
