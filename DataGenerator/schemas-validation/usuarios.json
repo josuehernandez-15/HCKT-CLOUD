@@ -7,7 +7,7 @@
   },
   "properties": {
     "user_id": { "type": "string" },
-    "email": {
+    "correo": {
       "type": "string",
       "format": "email"
     },
@@ -17,6 +17,6 @@
       "enum": ["admin", "analista", "operador"]
     }
   },
-  "required": ["user_id", "email", "nombre", "rol"],
+  "required": ["user_id", "correo", "nombre", "rol"],
   "additionalProperties": false
 }

@@ -22,12 +22,27 @@
       "additionalProperties": false
     },
 
+    "tipo": {
+      "type": "string",
+      "enum": ["seguridad", "mantenimiento", "otro"]
+    },
+
+    "nivel_urgencia": {
+      "type": "string",
+      "enum": ["bajo", "medio", "alto", "critico"]
+    },
+
+    "evidencias": {
+      "type": "array",
+      "items": { "type": "string", "format": "url" }
+    },
+
     "estado": {
       "type": "string",
       "enum": ["reportado", "en_progreso", "resuelto"]
     },
 
-    "usuario_id": { "type": "string" },
+    "usuario_correo": { "type": "string" },
 
     "created_at": { "type": "string", "format": "date-time" },
     "updated_at": { "type": "string", "format": "date-time" }
@@ -36,11 +51,13 @@
   "required": [
     "incidente_id",
     "titulo",
+    "tipo",
+    "nivel_urgencia",
     "descripcion",
     "piso",
     "ubicacion",
     "estado",
-    "usuario_id",
+    "usuario_correo",
     "created_at"
   ],
 
