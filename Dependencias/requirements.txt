@@ -6,9 +6,11 @@
 boto3>=1.35.0
 botocore>=1.35.0
 
+# Validación de datos
+jsonschema>=4.23.0
+
 # JWT para autenticación
 PyJWT>=2.9.0
-cryptography==42.0.5
 
 # Utilidades
 python-dateutil>=2.9.0
@@ -19,4 +21,4 @@ requests>=2.32.0
 urllib3>=2.0.0
 
 # Sending emails
-sendgrid>=6.9.1
+#sendgrid>=6.9.1

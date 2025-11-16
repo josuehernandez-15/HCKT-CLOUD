@@ -2,7 +2,7 @@ service: alerta-utec-notificaciones
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.13
   region: ${opt:region, env:AWS_REGION, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
   memorySize: 256
