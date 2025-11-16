@@ -65,6 +65,11 @@ prepare_dependencies() {
 # Función para crear infraestructura
 deploy_infrastructure() {
     echo -e "\n${BLUE}🏗️  Creando recursos de infraestructura (Tablas DynamoDB y Bucket S3)...${NC}"
+    
+    # Instalar dependencias necesarias para DataPoblator (boto3, python-dotenv)
+    echo -e "${YELLOW}📦 Instalando dependencias para DataPoblator...${NC}"
+    pip3 install -q boto3 python-dotenv
+    
     cd DataGenerator
     python3 DataPoblator.py
     cd ..
