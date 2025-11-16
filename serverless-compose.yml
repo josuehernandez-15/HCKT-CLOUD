@@ -1,0 +1,58 @@
+# ============================================================
+# ALERTA UTEC - SERVERLESS COMPOSE
+# ============================================================
+# Este archivo orquesta el despliegue de todos los microservicios
+# del backend de Alerta UTEC usando Serverless Framework Compose
+# ============================================================
+
+# Instrucciones de uso:
+# 1. Configura tu archivo .env basándote en .env.example
+# 2. Asegúrate de tener credenciales AWS configuradas en ~/.aws/credentials
+# 3. Ejecuta: serverless deploy (despliega todos los servicios)
+
+org: ${env:ORG_NAME}
+app: alerta-utec-backend
+stage: dev
+
+services:
+  # Capa compartida con dependencias Python
+  dependencias:
+    path: Dependencias
+
+  # Generador de datos y creación de tablas DynamoDB
+  data-generator:
+    path: DataGenerator
+    dependsOn:
+      - dependencias
+
+  # Microservicio de gestión de usuarios
+  usuarios:
+    path: Usuarios
+    dependsOn:
+      - dependencias
+      - data-generator
+
+  # Microservicio de gestión de incidentes
+  incidentes:
+    path: Incidentes
+    dependsOn:
+      - dependencias
+      - data-generator
+      - usuarios
+
+  # Microservicio de notificaciones en tiempo real
+  notificaciones:
+    path: Notificaciones
+    dependsOn:
+      - dependencias
+      - data-generator
+      - usuarios
+
+  # Microservicio de analítica y reportes
+  analitica:
+    path: Analitica
+    dependsOn:
+      - dependencias
+      - data-generator
+      - incidentes
+

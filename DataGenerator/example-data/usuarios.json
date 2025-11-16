@@ -1,0 +1,72 @@
+[
+  {
+    "usuario_id": "27a5994c-6fbf-4b49-ba74-d4d58e5df5d6",
+    "correo": "andrés.silva@gmail.com",
+    "contraseña": "hash_47a54a4babe24a04",
+    "nombre": "Andrés Silva",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "05d5782b-7b24-4764-a456-a1c356ea4556",
+    "correo": "carlos.lópez@outlook.com",
+    "contraseña": "hash_7de6ecf2060c44b4",
+    "nombre": "Carlos López",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "e8330d0a-9787-42ca-a8c9-b2ec0361ae66",
+    "correo": "maría.garcía@outlook.com",
+    "contraseña": "hash_069c287ab0164087",
+    "nombre": "María García",
+    "rol": "estudiante"
+  },
+  {
+    "usuario_id": "90f47d30-8c25-4e9c-90c9-d712c49ba972",
+    "correo": "carlos.lópez@outlook.com",
+    "contraseña": "hash_c5c85ebab12f439f",
+    "nombre": "Carlos López",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "correo": "laura.sánchez@gmail.com",
+    "contraseña": "hash_f59a4069ddd44108",
+    "nombre": "Laura Sánchez",
+    "rol": "autoridad"
+  },
+  {
+    "usuario_id": "795b6ffd-803c-48b3-ba0e-ace9a9be4558",
+    "correo": "laura.sánchez@outlook.com",
+    "contraseña": "hash_eaa0ddc59d5e423a",
+    "nombre": "Laura Sánchez",
+    "rol": "personal_administrativo"
+  },
+  {
+    "usuario_id": "83974084-7cec-4e11-a206-519a04397271",
+    "correo": "carlos.lópez@outlook.com",
+    "contraseña": "hash_e5f165bd1bc947e8",
+    "nombre": "Carlos López",
+    "rol": "estudiante"
+  },
+  {
+    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
+    "correo": "valentina.ortiz@outlook.com",
+    "contraseña": "hash_b6dc65ab1dd54cfa",
+    "nombre": "Valentina Ortiz",
+    "rol": "estudiante"
+  },
+  {
+    "usuario_id": "46c012d5-5dda-44d7-9196-395d8ca8202d",
+    "correo": "camila.rojas@utec.edu.pe",
+    "contraseña": "hash_7225b0f64f5a4751",
+    "nombre": "Camila Rojas",
+    "rol": "personal_administrativo"
+  },
+  {
+    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
+    "correo": "carlos.lópez@gmail.com",
+    "contraseña": "hash_e5197a5d585c4482",
+    "nombre": "Carlos López",
+    "rol": "personal_administrativo"
+  }
+]

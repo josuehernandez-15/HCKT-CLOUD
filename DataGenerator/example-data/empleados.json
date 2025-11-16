@@ -1,0 +1,82 @@
+[
+  {
+    "empleado_id": "b0598a49-1732-44bb-ab49-e86eb45b094d",
+    "nombre": "Luis Rodríguez",
+    "tipo_area": "seguridad",
+    "estado": "activo",
+    "contacto": {
+      "telefono": "+51 970556516",
+      "correo": "luis.rodríguez@utec.edu.pe"
+    }
+  },
+  {
+    "empleado_id": "3a30ad71-1701-43cc-be3b-1262ead1a025",
+    "nombre": "Laura Sánchez",
+    "tipo_area": "mantenimiento",
+    "estado": "inactivo",
+    "contacto": {
+      "telefono": "+51 977788073",
+      "correo": "laura.sánchez@gmail.com"
+    }
+  },
+  {
+    "empleado_id": "99f2f5ac-62c5-4a18-82f0-28c202071e5f",
+    "nombre": "Carlos López",
+    "tipo_area": "seguridad",
+    "estado": "activo",
+    "contacto": {
+      "telefono": "+51 987138510",
+      "correo": "carlos.lópez@outlook.com"
+    }
+  },
+  {
+    "empleado_id": "04da4463-dfdd-4e89-b992-b6e0588ce50d",
+    "nombre": "Sofía Castro",
+    "tipo_area": "otros",
+    "estado": "activo",
+    "contacto": {
+      "telefono": "+51 989406403",
+      "correo": "sofía.castro@utec.edu.pe"
+    }
+  },
+  {
+    "empleado_id": "563d28be-b489-4801-88a4-ac1443bdb7e9",
+    "nombre": "Diego Morales",
+    "tipo_area": "electricidad",
+    "estado": "inactivo",
+    "contacto": {
+      "telefono": "+51 985757268",
+      "correo": "diego.morales@utec.edu.pe"
+    }
+  },
+  {
+    "empleado_id": "10b82532-5635-40a9-a7d5-910a2241c689",
+    "nombre": "Luis Rodríguez",
+    "tipo_area": "seguridad",
+    "estado": "activo",
+    "contacto": {
+      "telefono": "+51 927904494",
+      "correo": "luis.rodríguez@gmail.com"
+    }
+  },
+  {
+    "empleado_id": "a08fb854-feee-4619-91ff-8f7db889cac9",
+    "nombre": "Juan Pérez",
+    "tipo_area": "limpieza",
+    "estado": "inactivo",
+    "contacto": {
+      "telefono": "+51 941742564",
+      "correo": "juan.pérez@gmail.com"
+    }
+  },
+  {
+    "empleado_id": "b2e2ac12-b1df-43e1-9ab5-49585a9abbde",
+    "nombre": "Camila Rojas",
+    "tipo_area": "limpieza",
+    "estado": "inactivo",
+    "contacto": {
+      "telefono": "+51 998078742",
+      "correo": "camila.rojas@utec.edu.pe"
+    }
+  }
+]

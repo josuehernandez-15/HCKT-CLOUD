@@ -1,0 +1,74 @@
+[
+  {
+    "conexion_id": "a55c7746-501a-4f89-b76f-fd9479b3d2b6",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "fecha_conexion": "2025-11-16T02:53:24.699652",
+    "expiracion_ttl": 1763268804
+  },
+  {
+    "conexion_id": "f457ce6b-01ff-4e1d-956e-76da57ea8f90",
+    "usuario_id": "46c012d5-5dda-44d7-9196-395d8ca8202d",
+    "fecha_conexion": "2025-11-16T02:40:24.699687",
+    "expiracion_ttl": 1763268024
+  },
+  {
+    "conexion_id": "bab87264-d0ba-4692-9c19-df84004f8ad8",
+    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
+    "fecha_conexion": "2025-11-16T03:05:24.699710",
+    "expiracion_ttl": 1763269524
+  },
+  {
+    "conexion_id": "25df8eb8-30f2-40f2-9829-5d0586428089",
+    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
+    "fecha_conexion": "2025-11-16T02:52:24.699731",
+    "expiracion_ttl": 1763268744
+  },
+  {
+    "conexion_id": "f498c2f2-4a9e-4546-9b40-2485f5cf1acc",
+    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
+    "fecha_conexion": "2025-11-16T02:22:24.699751",
+    "expiracion_ttl": 1763266944
+  },
+  {
+    "conexion_id": "e033c93b-c2ed-49f3-94ac-64cf4e53560a",
+    "usuario_id": "90f47d30-8c25-4e9c-90c9-d712c49ba972",
+    "fecha_conexion": "2025-11-16T01:56:24.699772",
+    "expiracion_ttl": 1763265384
+  },
+  {
+    "conexion_id": "74ab172d-01f4-4c15-9c11-c2974a24829f",
+    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
+    "fecha_conexion": "2025-11-16T01:56:24.699791",
+    "expiracion_ttl": 1763265384
+  },
+  {
+    "conexion_id": "7268179a-cb03-49e5-b64d-3347ab23536b",
+    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
+    "fecha_conexion": "2025-11-16T01:22:24.699808",
+    "expiracion_ttl": 1763263344
+  },
+  {
+    "conexion_id": "b24381e1-973a-4707-a911-c6d25633b2db",
+    "usuario_id": "e8330d0a-9787-42ca-a8c9-b2ec0361ae66",
+    "fecha_conexion": "2025-11-16T02:43:24.699824",
+    "expiracion_ttl": 1763268204
+  },
+  {
+    "conexion_id": "400ea001-d9e3-4e79-beba-1ee531e9df63",
+    "usuario_id": "795b6ffd-803c-48b3-ba0e-ace9a9be4558",
+    "fecha_conexion": "2025-11-16T02:22:24.699832",
+    "expiracion_ttl": 1763266944
+  },
+  {
+    "conexion_id": "6fb98688-9854-4f3c-92a3-94b944ea509d",
+    "usuario_id": "e8330d0a-9787-42ca-a8c9-b2ec0361ae66",
+    "fecha_conexion": "2025-11-16T01:23:24.699840",
+    "expiracion_ttl": 1763263404
+  },
+  {
+    "conexion_id": "b5cc32ff-7c40-4f37-820c-3871ed5611dd",
+    "usuario_id": "83974084-7cec-4e11-a206-519a04397271",
+    "fecha_conexion": "2025-11-16T01:23:24.699848",
+    "expiracion_ttl": 1763263404
+  }
+]

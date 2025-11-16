@@ -1,0 +1,269 @@
+[
+  {
+    "incidente_id": "b3b6729f-536f-41b5-9883-a754a834c97d",
+    "titulo": "Fuga de agua en baño",
+    "descripcion": "Requiere evaluación por especialista",
+    "piso": 1,
+    "ubicacion": {
+      "x": -76.98063,
+      "y": -12.088244
+    },
+    "tipo": "mantenimiento",
+    "nivel_urgencia": "bajo",
+    "evidencias": [],
+    "estado": "reportado",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "creado_en": "2025-10-21T03:21:24.697734",
+    "actualizado_en": "2025-10-21T16:21:24.697734"
+  },
+  {
+    "incidente_id": "63c313a7-6b5b-4236-8549-4e7b2c3afc34",
+    "titulo": "Escalera con pasamanos suelto",
+    "descripcion": "Problema detectado durante inspección de rutina",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.953532,
+      "y": -12.027996
+    },
+    "tipo": "mantenimiento",
+    "nivel_urgencia": "medio",
+    "evidencias": [
+      "https://storage.example.com/evidencias/463c5dce-fb77-49d1-80b6-8a2ba15da6e0.jpg"
+    ],
+    "estado": "en_progreso",
+    "usuario_id": "c7427123-21de-4a9c-9811-190ba4452ecb",
+    "creado_en": "2025-10-21T03:21:24.697796"
+  },
+  {
+    "incidente_id": "104f5081-8eff-45d9-b853-daa83465bc8c",
+    "titulo": "Proyector dañado",
+    "descripcion": "Situación de riesgo para estudiantes",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.952376,
+      "y": -12.082972
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "alto",
+    "evidencias": [
+      "https://storage.example.com/evidencias/e2bd6e6f-ae3e-418a-aaa8-a5c76cd8e91e.jpg"
+    ],
+    "estado": "resuelto",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "creado_en": "2025-10-30T03:21:24.697842",
+    "actualizado_en": "2025-11-01T02:21:24.697842"
+  },
+  {
+    "incidente_id": "91453eed-c466-4c8a-9cd3-0e648304a417",
+    "titulo": "Puerta atascada",
+    "descripcion": "Necesita reparación urgente",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.991441,
+      "y": -12.008704
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "medio",
+    "evidencias": [],
+    "estado": "reportado",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "creado_en": "2025-11-14T03:21:24.697886",
+    "actualizado_en": "2025-11-15T00:21:24.697886"
+  },
+  {
+    "incidente_id": "7d335f4f-e26b-407e-9342-a6d82f7d3b15",
+    "titulo": "Aire acondicionado no funciona",
+    "descripcion": "Reportado por múltiples usuarios",
+    "piso": 1,
+    "ubicacion": {
+      "x": -76.924345,
+      "y": -12.05339
+    },
+    "tipo": "mantenimiento",
+    "nivel_urgencia": "critico",
+    "evidencias": [
+      "https://storage.example.com/evidencias/fd9d2639-d7bc-49d3-b0f6-b360cd7534a9.jpg"
+    ],
+    "estado": "reportado",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "creado_en": "2025-10-24T03:21:24.697908",
+    "actualizado_en": "2025-10-24T23:21:24.697908"
+  },
+  {
+    "incidente_id": "dd342b27-d6ef-49dc-962f-626c1c1487c7",
+    "titulo": "Ventana rota en aula",
+    "descripcion": "Problema recurrente en esta área",
+    "piso": 3,
+    "ubicacion": {
+      "x": -76.918622,
+      "y": -12.019533
+    },
+    "tipo": "seguridad",
+    "nivel_urgencia": "bajo",
+    "evidencias": [
+      "https://storage.example.com/evidencias/c217f7af-83ce-4f80-9307-34cf7e7d18c0.jpg"
+    ],
+    "estado": "resuelto",
+    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
+    "creado_en": "2025-10-31T03:21:24.697928",
+    "actualizado_en": "2025-11-01T04:21:24.697928"
+  },
+  {
+    "incidente_id": "1ebb5792-ef18-4392-beb1-39d9966cfdce",
+    "titulo": "Mesa inestable",
+    "descripcion": "Problema detectado durante inspección de rutina",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.926304,
+      "y": -12.07411
+    },
+    "tipo": "seguridad",
+    "nivel_urgencia": "critico",
+    "evidencias": [],
+    "estado": "reportado",
+    "usuario_id": "e8330d0a-9787-42ca-a8c9-b2ec0361ae66",
+    "creado_en": "2025-11-16T03:21:24.697946",
+    "actualizado_en": "2025-11-16T14:21:24.697946"
+  },
+  {
+    "incidente_id": "6e48b248-d60f-4596-b98f-7414e8210e91",
+    "titulo": "Ventana rota en aula",
+    "descripcion": "Problema recurrente en esta área",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.953809,
+      "y": -12.030985
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "medio",
+    "evidencias": [],
+    "estado": "reportado",
+    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
+    "creado_en": "2025-10-17T03:21:24.697961",
+    "actualizado_en": "2025-10-17T20:21:24.697961"
+  },
+  {
+    "incidente_id": "bcee011a-d9af-490c-93e0-1e5ebec51cec",
+    "titulo": "Ventana rota en aula",
+    "descripcion": "Requiere evaluación por especialista",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.999747,
+      "y": -12.09899
+    },
+    "tipo": "seguridad",
+    "nivel_urgencia": "critico",
+    "evidencias": [
+      "https://storage.example.com/evidencias/bca34c8f-51a8-408b-b7ba-29a2401cb33c.jpg"
+    ],
+    "estado": "resuelto",
+    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
+    "creado_en": "2025-10-24T03:21:24.697974"
+  },
+  {
+    "incidente_id": "8f5a97bf-fdfc-4248-8eac-a2e94656b4df",
+    "titulo": "Fuga de agua en baño",
+    "descripcion": "Reportado por múltiples usuarios",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.930232,
+      "y": -12.047017
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "medio",
+    "evidencias": [
+      "https://storage.example.com/evidencias/e8bcbb39-b4ff-421d-a1d5-07717a1384b4.jpg"
+    ],
+    "estado": "reportado",
+    "usuario_id": "27a5994c-6fbf-4b49-ba74-d4d58e5df5d6",
+    "creado_en": "2025-10-22T03:21:24.697994"
+  },
+  {
+    "incidente_id": "5cc3c807-e919-41a0-9aef-48656d5ed876",
+    "titulo": "Luz fundida en pasillo",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 1,
+    "ubicacion": {
+      "x": -76.923324,
+      "y": -12.011903
+    },
+    "tipo": "seguridad",
+    "nivel_urgencia": "alto",
+    "evidencias": [
+      "https://storage.example.com/evidencias/90eebd94-09d5-48d8-b405-adb74ba82cad.jpg"
+    ],
+    "estado": "en_progreso",
+    "usuario_id": "27a5994c-6fbf-4b49-ba74-d4d58e5df5d6",
+    "creado_en": "2025-10-17T03:21:24.698011"
+  },
+  {
+    "incidente_id": "378cfba0-bc0b-4a9f-a775-50f3459c8288",
+    "titulo": "Luz fundida en pasillo",
+    "descripcion": "Reportado por múltiples usuarios",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.965638,
+      "y": -12.09496
+    },
+    "tipo": "mantenimiento",
+    "nivel_urgencia": "medio",
+    "evidencias": [
+      "https://storage.example.com/evidencias/efa476e0-0dd0-4d09-b2b1-ce8687a514b4.jpg"
+    ],
+    "estado": "resuelto",
+    "usuario_id": "90f47d30-8c25-4e9c-90c9-d712c49ba972",
+    "creado_en": "2025-10-22T03:21:24.698026",
+    "actualizado_en": "2025-10-23T22:21:24.698026"
+  },
+  {
+    "incidente_id": "1ff5511e-36b1-4d06-91e4-e683e53a02c8",
+    "titulo": "Ventana rota en aula",
+    "descripcion": "Situación de riesgo para estudiantes",
+    "piso": 1,
+    "ubicacion": {
+      "x": -76.907509,
+      "y": -12.015423
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "bajo",
+    "evidencias": [],
+    "estado": "resuelto",
+    "usuario_id": "938b60a1-04e2-4d99-9d65-754f1ee3b6cb",
+    "creado_en": "2025-11-09T03:21:24.698044"
+  },
+  {
+    "incidente_id": "6d76dea6-30b8-425b-918d-f415c533ad03",
+    "titulo": "Escalera con pasamanos suelto",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.906589,
+      "y": -12.071935
+    },
+    "tipo": "seguridad",
+    "nivel_urgencia": "medio",
+    "evidencias": [],
+    "estado": "en_progreso",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "creado_en": "2025-10-18T03:21:24.698054",
+    "actualizado_en": "2025-10-19T12:21:24.698054"
+  },
+  {
+    "incidente_id": "1ba9079a-6756-4d3d-a707-33a584dd79f1",
+    "titulo": "Luz fundida en pasillo",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.909495,
+      "y": -12.045343
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "alto",
+    "evidencias": [
+      "https://storage.example.com/evidencias/eeb62d08-2aa4-4f16-8aeb-c9328ba56f2d.jpg"
+    ],
+    "estado": "resuelto",
+    "usuario_id": "98c1e9fd-2fb5-4e5d-a862-511fd885e8dd",
+    "creado_en": "2025-10-28T03:21:24.698067"
+  }
+]

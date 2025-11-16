@@ -42,10 +42,10 @@
       "enum": ["reportado", "en_progreso", "resuelto"]
     },
 
-    "usuario_correo": { "type": "string" },
+    "usuario_id": { "type": "string" },
 
-    "created_at": { "type": "string", "format": "date-time" },
-    "updated_at": { "type": "string", "format": "date-time" }
+    "creado_en": { "type": "string", "format": "date-time" },
+    "actualizado_en": { "type": "string", "format": "date-time" }
   },
 
   "required": [
@@ -57,8 +57,8 @@
     "piso",
     "ubicacion",
     "estado",
-    "usuario_correo",
-    "created_at"
+    "usuario_id",
+    "creado_en"
   ],
 
   "additionalProperties": false

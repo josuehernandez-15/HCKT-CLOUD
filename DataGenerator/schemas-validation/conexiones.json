@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "WebSocketConnections",
+  "title": "Conexiones",
   "type": "object",
   "x-dynamodb": {
-    "partition_key": "connection_id"
+    "partition_key": "conexion_id"
   },
   "properties": {
-    "connection_id": { "type": "string" },
+    "conexion_id": { "type": "string" },
 
     "usuario_id": { "type": "string" },
 
@@ -15,12 +15,12 @@
       "format": "date-time"
     },
 
-    "expira_en": {
+    "expiracion_ttl": {
       "type": "number"
     }
   },
 
-  "required": ["connection_id", "usuario_id", "fecha_conexion"],
+  "required": ["conexion_id", "usuario_id", "fecha_conexion"],
 
   "additionalProperties": false
 }

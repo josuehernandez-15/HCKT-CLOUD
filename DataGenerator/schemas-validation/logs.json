@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Logs",
+  "title": "Registros",
   "type": "object",
   "x-dynamodb": {
-    "partition_key": "log_id"
+    "partition_key": "registro_id"
   },
   "properties": {
-    "log_id": { "type": "string" },
+    "registro_id": { "type": "string" },
 
     "nivel": {
       "type": "string",
@@ -22,15 +22,15 @@
       "additionalProperties": true
     },
 
-    "timestamp": { "type": "string", "format": "date-time" }
+    "marca_tiempo": { "type": "string", "format": "date-time" }
   },
 
   "required": [
-    "log_id",
+    "registro_id",
     "nivel",
     "mensaje",
     "servicio",
-    "timestamp"
+    "marca_tiempo"
   ],
 
   "additionalProperties": false

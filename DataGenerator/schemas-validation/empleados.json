@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Empleados",
+  "type": "object",
+  "x-dynamodb": {
+    "partition_key": "empleado_id"
+  },
+  "properties": {
+    "empleado_id": { "type": "string" },
+
+    "nombre": { "type": "string" },
+
+    "tipo_area": { 
+      "type": "string",
+      "enum": [
+        "mantenimiento",
+        "electricidad",
+        "limpieza",
+        "seguridad",
+        "ti",
+        "logistica",
+        "otros"
+      ]
+    },
+
+    "estado": {
+      "type": "string",
+      "enum": ["activo", "inactivo"]
+    },
+
+    "contacto": {
+      "type": "object",
+      "properties": {
+        "telefono": { "type": "string" },
+        "correo": { "type": "string", "format": "email" }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+
+  "required": ["empleado_id", "nombre", "tipo_area", "estado"],
+  "additionalProperties": false
+}
