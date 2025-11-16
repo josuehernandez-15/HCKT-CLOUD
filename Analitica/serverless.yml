@@ -39,61 +39,6 @@ resources:
           - IpProtocol: "-1"
             CidrIp: 0.0.0.0/0
 
-    AnaliticaAirflowTaskExecutionRole:
-      Type: AWS::IAM::Role
-      Properties:
-        RoleName: alerta-utec-analitica-ecs-execution
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service: ecs-tasks.amazonaws.com
-              Action: sts:AssumeRole
-        ManagedPolicyArns:
-          - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-
-    AnaliticaAirflowTaskRole:
-      Type: AWS::IAM::Role
-      Properties:
-        RoleName: alerta-utec-analitica-ecs-task
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service: ecs-tasks.amazonaws.com
-              Action: sts:AssumeRole
-        Policies:
-          - PolicyName: alerta-utec-analitica-ingesta
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - dynamodb:Scan
-                    - dynamodb:DescribeTable
-                  Resource: arn:aws:dynamodb:${env:AWS_REGION, 'us-east-1'}:${env:AWS_ACCOUNT_ID}:table/*
-                - Effect: Allow
-                  Action:
-                    - s3:ListBucket
-                  Resource: arn:aws:s3:::${env:ANALITICA_S3_BUCKET}
-                - Effect: Allow
-                  Action:
-                    - s3:PutObject
-                    - s3:GetObject
-                    - s3:DeleteObject
-                  Resource: arn:aws:s3:::${env:ANALITICA_S3_BUCKET}/*
-                - Effect: Allow
-                  Action:
-                    - glue:GetCrawler
-                    - glue:CreateCrawler
-                    - glue:UpdateCrawler
-                    - glue:StartCrawler
-                    - glue:GetDatabase
-                    - glue:CreateDatabase
-                  Resource: "*"
-
     AnaliticaAirflowTaskDefinition:
       Type: AWS::ECS::TaskDefinition
       Properties:
@@ -103,8 +48,8 @@ resources:
         NetworkMode: awsvpc
         RequiresCompatibilities:
           - FARGATE
-        ExecutionRoleArn: !GetAtt AnaliticaAirflowTaskExecutionRole.Arn
-        TaskRoleArn: !GetAtt AnaliticaAirflowTaskRole.Arn
+        ExecutionRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
+        TaskRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
         ContainerDefinitions:
           - Name: airflow
             Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/alerta-utec-airflow:latest
