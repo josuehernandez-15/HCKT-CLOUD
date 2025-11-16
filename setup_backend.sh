@@ -35,8 +35,3 @@ sls deploy
 echo -e "\n${GREEN}============================================================${NC}"
 echo -e "${GREEN}🎉 DESPLIEGUE COMPLETADO EXITOSAMENTE${NC}"
 echo -e "${GREEN}============================================================${NC}"
-
-echo -e "\n${BLUE}📋 Endpoints desplegados:${NC}"
-sls info --verbose
-
-echo -e "\n${YELLOW}💡 Tip: Usa 'sls logs -f <function-name> -t' para ver logs en tiempo real${NC}"

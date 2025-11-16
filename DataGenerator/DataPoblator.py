@@ -52,8 +52,8 @@ TABLE_MAPPING = {
     },
     "logs.json": {
         "table_name": TABLE_LOGS,
-        "pk": "log_id",
-        "sk": "timestamp"
+        "pk": "registro_id",
+        "sk": "marca_tiempo"
     },
     "conexiones.json": {
         "table_name": TABLE_CONEXIONES,
@@ -474,12 +474,12 @@ def create_all_resources():
     if not create_dynamodb_table(
         table_name=TABLE_LOGS,
         key_schema=[
-            {'AttributeName': 'log_id', 'KeyType': 'HASH'},
-            {'AttributeName': 'timestamp', 'KeyType': 'RANGE'}
+            {'AttributeName': 'registro_id', 'KeyType': 'HASH'},
+            {'AttributeName': 'marca_tiempo', 'KeyType': 'RANGE'}
         ],
         attribute_definitions=[
-            {'AttributeName': 'log_id', 'AttributeType': 'S'},
-            {'AttributeName': 'timestamp', 'AttributeType': 'S'}
+            {'AttributeName': 'registro_id', 'AttributeType': 'S'},
+            {'AttributeName': 'marca_tiempo', 'AttributeType': 'S'}
         ],
         ttl_attribute='ttl'
     ):
