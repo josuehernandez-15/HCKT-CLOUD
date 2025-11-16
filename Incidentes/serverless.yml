@@ -1,1 +1,30 @@
+service: alerta-utec-incidentes
+
+provider:
+  name: aws
+  runtime: python3.13
+  region: us-east-1
+  memorySize: 256
+  timeout: 30
+  iam:
+    role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
+  environment:
+    TABLE_INCIDENTES: ${env:TABLE_INCIDENTES}
+    TABLE_USUARIOS: ${env:TABLE_USUARIOS}
+    TABLE_EMPLEADOS: ${env:TABLE_EMPLEADOS}
+  
+  layers:
+    - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerArn}
+
+functions:
+  # TODO: Implementar funciones Lambda
+  # - crearIncidente
+  # - obtenerIncidente
+  # - listarIncidentes
+  # - actualizarIncidente
+  # - asignarEmpleado
+  # - cambiarEstado
+  placeholder:
+    handler: handler.placeholder
+    description: Función placeholder hasta implementar el microservicio
 

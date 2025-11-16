@@ -1,1 +1,28 @@
+service: alerta-utec-analitica
+
+provider:
+  name: aws
+  runtime: python3.13
+  region: us-east-1
+  memorySize: 512
+  timeout: 60
+  iam:
+    role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
+  environment:
+    TABLE_INCIDENTES: ${env:TABLE_INCIDENTES}
+    TABLE_LOGS: ${env:TABLE_LOGS}
+    TABLE_EMPLEADOS: ${env:TABLE_EMPLEADOS}
+  
+  layers:
+    - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerArn}
+
+functions:
+  # TODO: Implementar funciones Lambda
+  # - generarReporte
+  # - obtenerEstadisticas
+  # - analizarTendencias
+  # - dashboardMetricas
+  placeholder:
+    handler: handler.placeholder
+    description: Función placeholder hasta implementar el microservicio
 

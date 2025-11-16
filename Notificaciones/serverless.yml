@@ -1,1 +1,39 @@
+service: alerta-utec-notificaciones
+
+provider:
+  name: aws
+  runtime: python3.13
+  region: us-east-1
+  memorySize: 256
+  timeout: 30
+  iam:
+    role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
+  environment:
+    TABLE_CONEXIONES: ${env:TABLE_CONEXIONES}
+  
+  layers:
+    - ${cf:alerta-utec-dependencias-dev.PythonDependenciesLayerArn}
+
+functions:
+  # Funciones para WebSocket API
+  connect:
+    handler: handler.connect
+    description: Maneja nuevas conexiones WebSocket
+    events:
+      - websocket:
+          route: $connect
+  
+  disconnect:
+    handler: handler.disconnect
+    description: Maneja desconexiones WebSocket
+    events:
+      - websocket:
+          route: $disconnect
+  
+  # TODO: Implementar funciones adicionales
+  # - enviarNotificacion
+  # - broadcast
+  placeholder:
+    handler: handler.placeholder
+    description: Función placeholder hasta implementar el microservicio
 
