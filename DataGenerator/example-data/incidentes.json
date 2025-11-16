@@ -1,261 +1,263 @@
 [
   {
-    "incidente_id": "6fe3a17c-91f3-4cdb-9a64-271ef11f6a2a",
-    "titulo": "Puerta atascada",
+    "incidente_id": "85661b73-d2cb-488a-8ff7-228f1a404c4c",
+    "titulo": "Piso resbaladizo",
     "descripcion": "Problema detectado durante inspección de rutina",
+    "piso": 4,
+    "ubicacion": {
+      "x": -76.914418,
+      "y": -12.041067
+    },
+    "tipo": "limpieza",
+    "nivel_urgencia": "bajo",
+    "evidencias": [
+      "https://storage.example.com/evidencias/c9564666-ba4d-4337-8974-bdeba236bbfd.jpg"
+    ],
+    "estado": "en_progreso",
+    "usuario_correo": "juan.pérez@utec.edu.pe",
+    "creado_en": "2025-10-17T06:53:08.982216",
+    "actualizado_en": "2025-10-18T01:53:08.982216"
+  },
+  {
+    "incidente_id": "77794df5-e5d1-4b66-a4b0-74ec75abca47",
+    "titulo": "Escalera con pasamanos suelto",
+    "descripcion": "Situación de riesgo para estudiantes",
     "piso": 3,
     "ubicacion": {
-      "x": -76.991575,
-      "y": -12.049702
+      "x": -76.938882,
+      "y": -12.005409
     },
     "tipo": "mantenimiento",
     "nivel_urgencia": "medio",
     "evidencias": [],
     "estado": "reportado",
-    "usuario_correo": "juan.pérez@gmail.com",
-    "creado_en": "2025-10-27T04:12:20.059007",
-    "actualizado_en": "2025-10-28T06:12:20.059007"
+    "usuario_correo": "ana.martínez@gmail.com",
+    "creado_en": "2025-11-02T06:53:08.982287"
   },
   {
-    "incidente_id": "98a1113c-2d40-4dc1-80b9-bc45648a1e59",
-    "titulo": "Luz fundida en pasillo",
-    "descripcion": "Problema detectado durante inspección de rutina",
-    "piso": 5,
-    "ubicacion": {
-      "x": -76.97432,
-      "y": -12.006191
-    },
-    "tipo": "TI",
-    "nivel_urgencia": "medio",
-    "evidencias": [],
-    "estado": "en_progreso",
-    "usuario_correo": "sofía.castro@outlook.com",
-    "creado_en": "2025-10-27T04:12:20.059067",
-    "actualizado_en": "2025-10-28T09:12:20.059067"
-  },
-  {
-    "incidente_id": "8e434f8b-5cf5-4e08-b529-9cf0009ee0ac",
-    "titulo": "Aire acondicionado no funciona",
-    "descripcion": "Afecta el uso normal del área",
-    "piso": 1,
-    "ubicacion": {
-      "x": -76.964237,
-      "y": -12.034179
-    },
-    "tipo": "seguridad",
-    "nivel_urgencia": "alto",
-    "evidencias": [
-      "https://storage.example.com/evidencias/a8d92e53-7631-42a3-a0d6-c74c38932186.jpg"
-    ],
-    "estado": "en_progreso",
-    "usuario_correo": "juan.pérez@gmail.com",
-    "creado_en": "2025-11-02T04:12:20.059108"
-  },
-  {
-    "incidente_id": "7eadd6d5-4a5a-425c-9070-65bd12efebfe",
-    "titulo": "Fuga de agua en baño",
-    "descripcion": "Requiere evaluación por especialista",
-    "piso": 3,
-    "ubicacion": {
-      "x": -76.943382,
-      "y": -12.033797
-    },
-    "tipo": "TI",
-    "nivel_urgencia": "medio",
-    "evidencias": [],
-    "estado": "reportado",
-    "usuario_correo": "ana.martínez@utec.edu.pe",
-    "creado_en": "2025-11-09T04:12:20.059147",
-    "actualizado_en": "2025-11-09T08:12:20.059147"
-  },
-  {
-    "incidente_id": "36cee81f-3618-4533-969f-fd23f68743f7",
+    "incidente_id": "4dfcf8e5-0a16-40af-a361-0fc72a807967",
     "titulo": "Ventana rota en aula",
     "descripcion": "Se requiere atención inmediata",
-    "piso": 5,
-    "ubicacion": {
-      "x": -76.971757,
-      "y": -12.070589
-    },
-    "tipo": "limpieza",
-    "nivel_urgencia": "alto",
-    "evidencias": [],
-    "estado": "en_progreso",
-    "usuario_correo": "camila.rojas@outlook.com",
-    "creado_en": "2025-11-16T04:12:20.059164",
-    "actualizado_en": "2025-11-17T06:12:20.059164"
-  },
-  {
-    "incidente_id": "ec546955-e1cd-4a5b-ace3-faab8be92b35",
-    "titulo": "Luz fundida en pasillo",
-    "descripcion": "Problema detectado durante inspección de rutina",
-    "piso": 2,
-    "ubicacion": {
-      "x": -76.934347,
-      "y": -12.026381
-    },
-    "tipo": "seguridad",
-    "nivel_urgencia": "medio",
-    "evidencias": [
-      "https://storage.example.com/evidencias/9fc5f4bf-cb42-447a-9200-6f3733acfad9.jpg"
-    ],
-    "estado": "en_progreso",
-    "usuario_correo": "camila.rojas@outlook.com",
-    "creado_en": "2025-10-24T04:12:20.059179",
-    "actualizado_en": "2025-10-24T12:12:20.059179"
-  },
-  {
-    "incidente_id": "27778910-47c0-40ea-b366-35d2f31e367a",
-    "titulo": "Fuga de agua en baño",
-    "descripcion": "Se requiere atención inmediata",
     "piso": 3,
     "ubicacion": {
-      "x": -76.948415,
-      "y": -12.051934
+      "x": -76.959249,
+      "y": -12.064943
     },
-    "tipo": "otro",
+    "tipo": "TI",
     "nivel_urgencia": "bajo",
-    "evidencias": [
-      "https://storage.example.com/evidencias/65171807-a646-421c-853e-2c5ba052d62e.jpg"
-    ],
+    "evidencias": [],
     "estado": "en_progreso",
-    "usuario_correo": "josé.gonzález@utec.edu.pe",
-    "creado_en": "2025-10-22T04:12:20.059198"
+    "usuario_correo": "carlos.lópez@outlook.com",
+    "creado_en": "2025-11-13T06:53:08.982321",
+    "actualizado_en": "2025-11-13T09:53:08.982321"
   },
   {
-    "incidente_id": "57934282-bfad-4c48-88af-766e8feca49d",
-    "titulo": "Silla rota",
+    "incidente_id": "37ce853c-a2cb-4244-a28f-eaf28ab1523e",
+    "titulo": "Mesa inestable",
     "descripcion": "Requiere evaluación por especialista",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.912803,
+      "y": -12.071163
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "alto",
+    "evidencias": [],
+    "estado": "resuelto",
+    "usuario_correo": "carlos.lópez@outlook.com",
+    "creado_en": "2025-10-30T06:53:08.982358"
+  },
+  {
+    "incidente_id": "f108939f-b586-4c21-9653-63750896893c",
+    "titulo": "Aire acondicionado no funciona",
+    "descripcion": "Reportado por múltiples usuarios",
     "piso": 1,
     "ubicacion": {
-      "x": -76.904301,
-      "y": -12.022308
+      "x": -76.938348,
+      "y": -12.010453
     },
-    "tipo": "limpieza",
-    "nivel_urgencia": "alto",
+    "tipo": "mantenimiento",
+    "nivel_urgencia": "bajo",
     "evidencias": [],
-    "estado": "en_progreso",
-    "usuario_correo": "ana.martínez@utec.edu.pe",
-    "creado_en": "2025-10-26T04:12:20.059214"
+    "estado": "resuelto",
+    "usuario_correo": "carmen.fernández@utec.edu.pe",
+    "creado_en": "2025-11-06T06:53:08.982375"
   },
   {
-    "incidente_id": "d0651a28-f7a9-484d-a5d0-4cdf69532a79",
-    "titulo": "Fuga de agua en baño",
-    "descripcion": "Afecta el uso normal del área",
+    "incidente_id": "73100a06-3a6b-4dcf-a839-1c66e3c77705",
+    "titulo": "Piso resbaladizo",
+    "descripcion": "Problema recurrente en esta área",
     "piso": 4,
     "ubicacion": {
-      "x": -76.931479,
-      "y": -12.08459
+      "x": -76.987247,
+      "y": -12.064363
     },
-    "tipo": "TI",
+    "tipo": "mantenimiento",
     "nivel_urgencia": "alto",
-    "evidencias": [],
+    "evidencias": [
+      "https://storage.example.com/evidencias/fad64300-b9dc-4bd1-b58b-51d78a3300c1.jpg"
+    ],
     "estado": "reportado",
-    "usuario_correo": "juan.pérez@gmail.com",
-    "creado_en": "2025-10-23T04:12:20.059225",
-    "actualizado_en": "2025-10-24T21:12:20.059225"
+    "usuario_correo": "juan.pérez@utec.edu.pe",
+    "creado_en": "2025-11-04T06:53:08.982387",
+    "actualizado_en": "2025-11-05T10:53:08.982387"
   },
   {
-    "incidente_id": "6a524e6f-4e22-440a-9378-334b7ce8b3fc",
-    "titulo": "Silla rota",
-    "descripcion": "Situación de riesgo para estudiantes",
-    "piso": 5,
+    "incidente_id": "7f8b7188-c887-402e-9fda-81b3b9279ec5",
+    "titulo": "Proyector dañado",
+    "descripcion": "Necesita reparación urgente",
+    "piso": 1,
     "ubicacion": {
-      "x": -76.932667,
-      "y": -12.054026
-    },
-    "tipo": "otro",
-    "nivel_urgencia": "medio",
-    "evidencias": [],
-    "estado": "en_progreso",
-    "usuario_correo": "josé.gonzález@utec.edu.pe",
-    "creado_en": "2025-11-13T04:12:20.059245",
-    "actualizado_en": "2025-11-13T07:12:20.059245"
-  },
-  {
-    "incidente_id": "698b3463-2fe0-43a2-bd63-357abb198349",
-    "titulo": "Silla rota",
-    "descripcion": "Requiere evaluación por especialista",
-    "piso": 2,
-    "ubicacion": {
-      "x": -76.987961,
-      "y": -12.068415
-    },
-    "tipo": "seguridad",
-    "nivel_urgencia": "medio",
-    "evidencias": [
-      "https://storage.example.com/evidencias/a376dde9-d8ba-4fc2-873c-d11a79ef35ff.jpg"
-    ],
-    "estado": "resuelto",
-    "usuario_correo": "sofía.castro@outlook.com",
-    "creado_en": "2025-11-09T04:12:20.059259"
-  },
-  {
-    "incidente_id": "f4f8c53c-f9bd-4ad7-8f37-8f0f730cb9f5",
-    "titulo": "Escalera con pasamanos suelto",
-    "descripcion": "Problema detectado durante inspección de rutina",
-    "piso": 3,
-    "ubicacion": {
-      "x": -76.982126,
-      "y": -12.046684
-    },
-    "tipo": "seguridad",
-    "nivel_urgencia": "alto",
-    "evidencias": [
-      "https://storage.example.com/evidencias/2b580d9e-f3d7-4025-a9cc-0fc2dad6e6dd.jpg"
-    ],
-    "estado": "en_progreso",
-    "usuario_correo": "diego.morales@utec.edu.pe",
-    "creado_en": "2025-10-17T04:12:20.059274"
-  },
-  {
-    "incidente_id": "5d10d1ef-28ad-461c-aea1-4177bcccaca6",
-    "titulo": "Escalera con pasamanos suelto",
-    "descripcion": "Problema detectado durante inspección de rutina",
-    "piso": 5,
-    "ubicacion": {
-      "x": -76.971151,
-      "y": -12.006047
+      "x": -76.931961,
+      "y": -12.00773
     },
     "tipo": "limpieza",
     "nivel_urgencia": "bajo",
     "evidencias": [],
-    "estado": "resuelto",
-    "usuario_correo": "ana.martínez@utec.edu.pe",
-    "creado_en": "2025-11-05T04:12:20.059289"
+    "estado": "reportado",
+    "usuario_correo": "carlos.lópez@outlook.com",
+    "creado_en": "2025-11-16T06:53:08.982444",
+    "actualizado_en": "2025-11-18T05:53:08.982444"
   },
   {
-    "incidente_id": "3d9c5cd7-d8f7-4bfe-abe9-346e7f283bd5",
-    "titulo": "Fuga de agua en baño",
+    "incidente_id": "06815766-87fa-4271-9666-b926ad1dbc0d",
+    "titulo": "Ventana rota en aula",
     "descripcion": "Situación de riesgo para estudiantes",
-    "piso": 4,
+    "piso": 1,
     "ubicacion": {
-      "x": -76.99393,
-      "y": -12.094212
+      "x": -76.910244,
+      "y": -12.035263
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "medio",
+    "evidencias": [],
+    "estado": "reportado",
+    "usuario_correo": "miguel.torres@gmail.com",
+    "creado_en": "2025-10-20T06:53:08.982460"
+  },
+  {
+    "incidente_id": "b4647d36-1745-4cae-8b6f-eaba5e1b9b53",
+    "titulo": "Piso resbaladizo",
+    "descripcion": "Problema detectado durante inspección de rutina",
+    "piso": 3,
+    "ubicacion": {
+      "x": -76.936271,
+      "y": -12.07181
     },
     "tipo": "TI",
     "nivel_urgencia": "medio",
     "evidencias": [
-      "https://storage.example.com/evidencias/506e7d3c-8d20-46d5-9758-df5fbd1ddf38.jpg"
+      "https://storage.example.com/evidencias/669a9c92-3793-48e2-9426-f982582280dc.jpg"
     ],
     "estado": "en_progreso",
-    "usuario_correo": "camila.rojas@outlook.com",
-    "creado_en": "2025-11-11T04:12:20.059300"
+    "usuario_correo": "carlos.lópez@outlook.com",
+    "creado_en": "2025-10-27T06:53:08.982472"
   },
   {
-    "incidente_id": "6aa6441a-4e3d-4234-8840-12ab0395e0fd",
-    "titulo": "Proyector dañado",
-    "descripcion": "Situación de riesgo para estudiantes",
-    "piso": 2,
+    "incidente_id": "e959e17d-60ee-4348-86db-b50218466b5e",
+    "titulo": "Piso resbaladizo",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 4,
     "ubicacion": {
-      "x": -76.955214,
-      "y": -12.092153
+      "x": -76.995819,
+      "y": -12.029819
     },
     "tipo": "TI",
     "nivel_urgencia": "alto",
+    "evidencias": [
+      "https://storage.example.com/evidencias/b159efc2-7e23-42cd-9094-ecc778748635.jpg"
+    ],
+    "estado": "resuelto",
+    "usuario_correo": "carmen.fernández@utec.edu.pe",
+    "creado_en": "2025-11-11T06:53:08.982492",
+    "actualizado_en": "2025-11-11T23:53:08.982492"
+  },
+  {
+    "incidente_id": "d3118e49-0f40-47a1-80a6-2b91b8363573",
+    "titulo": "Escalera con pasamanos suelto",
+    "descripcion": "Afecta el uso normal del área",
+    "piso": 1,
+    "ubicacion": {
+      "x": -76.948626,
+      "y": -12.01413
+    },
+    "tipo": "TI",
+    "nivel_urgencia": "medio",
+    "evidencias": [
+      "https://storage.example.com/evidencias/ad4f3a16-4108-46a0-86b1-7e5599620325.jpg"
+    ],
+    "estado": "reportado",
+    "usuario_correo": "camila.rojas@outlook.com",
+    "creado_en": "2025-11-13T06:53:08.982513"
+  },
+  {
+    "incidente_id": "6973f247-1bb2-4a2f-8d3a-29af25148c4a",
+    "titulo": "Escalera con pasamanos suelto",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 5,
+    "ubicacion": {
+      "x": -76.993705,
+      "y": -12.05266
+    },
+    "tipo": "otro",
+    "nivel_urgencia": "medio",
+    "evidencias": [
+      "https://storage.example.com/evidencias/2b7fb275-3ef8-4328-bcdb-25f4878a27aa.jpg"
+    ],
+    "estado": "reportado",
+    "usuario_correo": "ana.martínez@gmail.com",
+    "creado_en": "2025-11-03T06:53:08.982528",
+    "actualizado_en": "2025-11-03T18:53:08.982528"
+  },
+  {
+    "incidente_id": "6c33c7f3-708f-420b-9f26-2c6e13b34588",
+    "titulo": "Luz fundida en pasillo",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 1,
+    "ubicacion": {
+      "x": -76.932766,
+      "y": -12.00293
+    },
+    "tipo": "mantenimiento",
+    "nivel_urgencia": "medio",
     "evidencias": [],
     "estado": "resuelto",
-    "usuario_correo": "isabel.ramírez@gmail.com",
-    "creado_en": "2025-10-22T04:12:20.059315"
+    "usuario_correo": "miguel.torres@gmail.com",
+    "creado_en": "2025-11-13T06:53:08.982546",
+    "actualizado_en": "2025-11-14T19:53:08.982546"
+  },
+  {
+    "incidente_id": "f12f9bb0-6ca2-45b8-9d18-6991328382d9",
+    "titulo": "Piso resbaladizo",
+    "descripcion": "Situación de riesgo para estudiantes",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.914693,
+      "y": -12.059501
+    },
+    "tipo": "seguridad",
+    "nivel_urgencia": "critico",
+    "evidencias": [],
+    "estado": "reportado",
+    "usuario_correo": "carmen.fernández@utec.edu.pe",
+    "creado_en": "2025-11-07T06:53:08.982559"
+  },
+  {
+    "incidente_id": "59f97908-abf0-4fe4-8fea-8be0d42fe623",
+    "titulo": "Escalera con pasamanos suelto",
+    "descripcion": "Se requiere atención inmediata",
+    "piso": 2,
+    "ubicacion": {
+      "x": -76.900165,
+      "y": -12.023685
+    },
+    "tipo": "TI",
+    "nivel_urgencia": "medio",
+    "evidencias": [
+      "https://storage.example.com/evidencias/77914a93-affd-4fdf-8541-624f695b08ea.jpg"
+    ],
+    "estado": "reportado",
+    "usuario_correo": "carlos.lópez@outlook.com",
+    "creado_en": "2025-11-14T06:53:08.982570"
   }
 ]
