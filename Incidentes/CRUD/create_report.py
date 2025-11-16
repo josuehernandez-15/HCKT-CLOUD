@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from CRUD.utils import validar_token
 from botocore.exceptions import ClientError
 from decimal import Decimal, InvalidOperation
+import requests  # NUEVO
 
 dynamodb = boto3.resource('dynamodb')
 s3 = boto3.client('s3')
@@ -14,10 +15,14 @@ table_name = os.environ.get('TABLE_INCIDENTES')
 incidentes_table = dynamodb.Table(table_name)
 INCIDENTES_BUCKET = os.environ.get('INCIDENTES_BUCKET')
 
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "no-reply@example.com")
+
 TIPO_ENUM = ["limpieza", "TI" ,"seguridad", "mantenimiento", "otro"]
 NIVEL_URGENCIA_ENUM = ["bajo", "medio", "alto", "critico"]
 ESTADO_ENUM = ["reportado", "en_progreso", "resuelto"]
 PISO_RANGO = range(-2, 12)
+
 
 def _to_dynamodb_numbers(obj):
     """
@@ -37,6 +42,63 @@ def _to_dynamodb_numbers(obj):
         return Decimal(str(obj))
     return obj
 
+
+def enviar_correo_incidencia(correo_destino, nombre, incidente):
+    """
+    Envía un correo al usuario indicando que su incidencia fue registrada.
+    No rompe la Lambda si falla el envío.
+    """
+    if not BREVO_API_KEY or not EMAIL_FROM:
+        print("Brevo no configurado (falta BREVO_API_KEY o EMAIL_FROM)")
+        return
+
+    asunto = "Hemos recibido tu incidencia - Alerta UTEC"
+
+    if nombre:
+        saludo = f"Hola <strong>{nombre}</strong>,"
+    else:
+        saludo = "Hola,"
+
+    html = f"""
+        <p>{saludo}</p>
+        <p>Hemos recibido correctamente tu incidencia en la aplicación <strong>Alerta UTEC</strong> ✅.</p>
+        <p>En los próximos momentos nuestro equipo revisará el caso y comenzará a atenderlo.</p>
+        <p><strong>Resumen de la incidencia:</strong></p>
+        <ul>
+            <li><strong>Título:</strong> {incidente.get("titulo")}</li>
+            <li><strong>Tipo:</strong> {incidente.get("tipo")}</li>
+            <li><strong>Nivel de urgencia:</strong> {incidente.get("nivel_urgencia")}</li>
+            <li><strong>Código de seguimiento:</strong> {incidente.get("incidente_id")}</li>
+        </ul>
+        <p>Gracias por ayudarnos a mantener UTEC segura y en buen estado. 🏫</p>
+        <p><em>Por favor, no respondas a este correo. Ha sido generado automáticamente.</em></p>
+    """
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"email": EMAIL_FROM},
+        "to": [{"email": correo_destino}],
+        "subject": asunto,
+        "htmlContent": html,
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "api-key": BREVO_API_KEY,
+    }
+
+    try:
+        resp = requests.post(url, json=payload, headers=headers, timeout=10)
+        print(
+            "Correo de incidencia enviado. Status:",
+            resp.status_code,
+            "Body:",
+            resp.text,
+        )
+    except Exception as e:
+        print("Error al enviar correo de incidencia:", repr(e))
+
+
 def lambda_handler(event, context):
     headers = event.get("headers") or {}
     auth_header = headers.get("Authorization") or headers.get("authorization") or ""
@@ -54,7 +116,8 @@ def lambda_handler(event, context):
     
     usuario_autenticado = {
         "correo": resultado_validacion.get("correo"),
-        "rol": resultado_validacion.get("rol")
+        "rol": resultado_validacion.get("rol"),
+        "nombre": resultado_validacion.get("nombre")
     }
     
     if usuario_autenticado["rol"] not in ["estudiante", "personal_administrativo"]:
@@ -63,7 +126,6 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "No tienes permisos para crear un incidente"})
         }
     
-    # 👇 IMPORTANTE: parse_float=Decimal para que no se creen floats
     body = json.loads(event.get('body') or '{}', parse_float=Decimal)
     
     required_fields = [
@@ -89,7 +151,6 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Valor de 'nivel_urgencia' no válido"})
         }
 
-    # Normalizar piso
     try:
         piso_val = int(body["piso"])
     except (TypeError, ValueError):
@@ -104,7 +165,6 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Valor de 'piso' debe estar entre -2 y 11"})
         }
 
-    # Coordenadas opcionales
     coordenadas = body.get("coordenadas")
     lat = lng = None
 
@@ -203,7 +263,7 @@ def lambda_handler(event, context):
         "titulo": body["titulo"],
         "descripcion": body["descripcion"],
         "piso": piso_val,
-        "ubicacion": body["ubicacion"],   # aquí puede venir x/y con decimales
+        "ubicacion": body["ubicacion"],
         "tipo": body["tipo"],
         "nivel_urgencia": body["nivel_urgencia"],
         "evidencias": [evidencia_url] if evidencia_url else [],
@@ -219,21 +279,25 @@ def lambda_handler(event, context):
             "lng": lng
         }
 
-    # 👇 ÚLTIMO PASO CLAVE: convertir cualquier int/float a Decimal (ubicacion.x/y, etc.)
     incidente = _to_dynamodb_numbers(incidente)
     
     try:
         incidentes_table.put_item(Item=incidente)
+
+        enviar_correo_incidencia(
+            correo_destino=usuario_autenticado["correo"],
+            nombre=usuario_autenticado.get("nombre"),
+            incidente=incidente
+        )
+
         return {
             "statusCode": 201,
             "body": json.dumps({
-                "message": "Incidente creado correctamente",
+                "message": "Incidencia registrada correctamente. En breve comenzaremos a atenderla.",
                 "incidente_id": incidente_id
             })
         }
     except ClientError as e:
-        # Aquí también puedes loguear el item si quieres debug extra:
-        # print("ITEM QUE ROMPE:", incidente)
         return {
             "statusCode": 500,
             "body": json.dumps({"message": f"Error al crear el incidente: {str(e)}"})
