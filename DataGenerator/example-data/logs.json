@@ -1,242 +1,242 @@
 [
   {
-    "registro_id": "2c9a9fa8-e31e-4d63-bf97-ce72bb397856",
+    "registro_id": "502f3581-48ff-4b0d-9035-67f6a42e4221",
     "nivel": "ERROR",
+    "mensaje": "Conexión establecida",
+    "servicio": "usuarios",
+    "contexto": {
+      "request_id": "d99ce1e5-2075-4e17-86c5-8d39e077c354",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.141.30"
+    },
+    "marca_tiempo": "2025-11-13T22:13:36.813844"
+  },
+  {
+    "registro_id": "0b01d4db-0666-49f8-9ab4-6a6e32113b16",
+    "nivel": "INFO",
+    "mensaje": "Error al procesar solicitud",
+    "servicio": "analitica",
+    "contexto": {
+      "request_id": "aa970e32-6607-4131-816c-6a3c67db0821",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.46.76"
+    },
+    "marca_tiempo": "2025-11-14T17:13:36.813884"
+  },
+  {
+    "registro_id": "95fc8601-9b51-40ae-8ffb-fb0597500e21",
+    "nivel": "INFO",
+    "mensaje": "Error al procesar solicitud",
+    "servicio": "analitica",
+    "contexto": {
+      "request_id": "aaad2ce4-996b-4919-b388-62dd23e33386",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.167.248"
+    },
+    "marca_tiempo": "2025-11-15T11:13:36.813914"
+  },
+  {
+    "registro_id": "b586dd52-9029-4f17-b086-5a5beaa367e8",
+    "nivel": "CRITICAL",
+    "mensaje": "Usuario autenticado exitosamente",
+    "servicio": "notificaciones",
+    "contexto": {
+      "request_id": "7c933264-cdab-46b6-bcba-7cfb0f7c2a98",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.215.220"
+    },
+    "marca_tiempo": "2025-11-16T04:13:36.813944"
+  },
+  {
+    "registro_id": "f5df7719-6af3-49cf-951f-c433df826af0",
+    "nivel": "CRITICAL",
+    "mensaje": "Error de validación",
+    "servicio": "conexiones",
+    "contexto": {
+      "request_id": "fc0bbe72-7e9b-4835-baa3-cfd8b7850263",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.116.153"
+    },
+    "marca_tiempo": "2025-11-14T21:13:36.813997"
+  },
+  {
+    "registro_id": "dafbf169-1145-4be1-9397-a3a4d827c203",
+    "nivel": "INFO",
+    "mensaje": "Error al procesar solicitud",
+    "servicio": "notificaciones",
+    "contexto": {
+      "request_id": "f953eaca-c8bb-4165-9392-5edfb32651a4",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.78.89"
+    },
+    "marca_tiempo": "2025-11-14T01:13:36.814021"
+  },
+  {
+    "registro_id": "182cc3ab-38b3-4a41-b0b3-22325d138369",
+    "nivel": "INFO",
+    "mensaje": "Timeout en operación",
+    "servicio": "usuarios",
+    "contexto": {
+      "request_id": "854a3a8c-7b55-4d5d-a049-4412185f3b75",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.113.187"
+    },
+    "marca_tiempo": "2025-11-15T23:13:36.814034"
+  },
+  {
+    "registro_id": "3ef3f157-ad8b-4a9d-89d0-355fe72a187b",
+    "nivel": "WARNING",
+    "mensaje": "Error al procesar solicitud",
+    "servicio": "notificaciones",
+    "contexto": {
+      "request_id": "1dcd037e-f395-4ec5-a8c5-dc07f6b2a70d",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.138.115"
+    },
+    "marca_tiempo": "2025-11-15T17:13:36.814047"
+  },
+  {
+    "registro_id": "41772359-a550-488b-851a-630a6a6f7e5f",
+    "nivel": "WARNING",
+    "mensaje": "Servicio iniciado",
+    "servicio": "analitica",
+    "contexto": {
+      "request_id": "b962946d-b055-4998-bf98-e571fdadb604",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.4.218"
+    },
+    "marca_tiempo": "2025-11-13T20:13:36.814059"
+  },
+  {
+    "registro_id": "5ab820f9-2d6c-4849-b7c7-48c588705ac3",
+    "nivel": "WARNING",
+    "mensaje": "Usuario autenticado exitosamente",
+    "servicio": "notificaciones",
+    "contexto": {
+      "request_id": "5c8cfd9f-3c73-445f-a180-933e8fdca389",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.21.85"
+    },
+    "marca_tiempo": "2025-11-14T21:13:36.814071"
+  },
+  {
+    "registro_id": "47ca819e-ca31-4b95-a3d7-df62faca04c4",
+    "nivel": "INFO",
+    "mensaje": "Operación completada",
+    "servicio": "conexiones",
+    "contexto": {
+      "request_id": "0b3d9db0-2002-4fa2-b5ff-b071797b4b56",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.252.224"
+    },
+    "marca_tiempo": "2025-11-16T06:13:36.814084"
+  },
+  {
+    "registro_id": "8e330e73-be5c-4e9e-9965-176c31efd201",
+    "nivel": "WARNING",
+    "mensaje": "Conexión establecida",
+    "servicio": "analitica",
+    "contexto": {
+      "request_id": "ffef4b6f-a68f-49e0-a0a7-aced1fac48c2",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.147.121"
+    },
+    "marca_tiempo": "2025-11-13T17:13:36.814097"
+  },
+  {
+    "registro_id": "cfe200e3-e711-4ada-95b5-cff2ecd53822",
+    "nivel": "INFO",
+    "mensaje": "Conexión establecida",
+    "servicio": "conexiones",
+    "contexto": {
+      "request_id": "1a7f653c-cca7-4f0a-a7db-8b3f40fe8b9f",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.56.21"
+    },
+    "marca_tiempo": "2025-11-14T15:13:36.814109"
+  },
+  {
+    "registro_id": "1bfad577-f9bf-45be-ae3c-d1ed556c416b",
+    "nivel": "ERROR",
+    "mensaje": "Operación completada",
+    "servicio": "incidentes",
+    "contexto": {
+      "request_id": "105980a7-16fd-44bd-99ba-0bbebf05ae43",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.195.43"
+    },
+    "marca_tiempo": "2025-11-14T12:13:36.814121"
+  },
+  {
+    "registro_id": "7be2b8c9-ca9d-4097-a1ca-990dee951cce",
+    "nivel": "CRITICAL",
+    "mensaje": "Datos guardados correctamente",
+    "servicio": "usuarios",
+    "contexto": {
+      "request_id": "ec12ee84-0557-4d49-8b66-9cd408979027",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.160.226"
+    },
+    "marca_tiempo": "2025-11-13T16:13:36.814133"
+  },
+  {
+    "registro_id": "e9fb173c-b860-4e77-bd82-d0e235a52914",
+    "nivel": "WARNING",
+    "mensaje": "Error de validación",
+    "servicio": "usuarios",
+    "contexto": {
+      "request_id": "83937a56-74cd-4c8c-a40e-db3a6f4c8387",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.240.227"
+    },
+    "marca_tiempo": "2025-11-13T21:13:36.814146"
+  },
+  {
+    "registro_id": "cc194662-b1ae-4101-827d-4e90cbe2f12d",
+    "nivel": "INFO",
     "mensaje": "Datos guardados correctamente",
     "servicio": "notificaciones",
     "contexto": {
-      "request_id": "c806fde6-abd7-40b8-b773-f71c41e01c65",
+      "request_id": "e1e2607f-8203-4817-b4a5-92c56123e22b",
       "user_agent": "AWS Lambda",
-      "ip": "192.168.174.139"
+      "ip": "192.168.165.213"
     },
-    "marca_tiempo": "2025-11-15T16:23:01.975178"
+    "marca_tiempo": "2025-11-15T22:13:36.814163"
   },
   {
-    "registro_id": "ee58e1cc-1228-40a6-b1f5-3d07bb50d833",
-    "nivel": "WARNING",
-    "mensaje": "Operación completada",
-    "servicio": "incidentes",
-    "contexto": {
-      "request_id": "4bf02229-0354-49e7-9728-6a40d222274d",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.229.86"
-    },
-    "marca_tiempo": "2025-11-15T07:23:01.975219"
-  },
-  {
-    "registro_id": "10be350e-0374-4f52-af45-4f02e2fbae9e",
+    "registro_id": "796937b8-9a50-4295-bd2f-4d1a25319b35",
     "nivel": "CRITICAL",
-    "mensaje": "Timeout en operación",
-    "servicio": "notificaciones",
-    "contexto": {
-      "request_id": "fa8605f1-43cf-47c3-bce6-be0a7f4cd587",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.194.16"
-    },
-    "marca_tiempo": "2025-11-15T18:23:01.975250"
-  },
-  {
-    "registro_id": "6502244f-3f1b-45ad-a7aa-512118d68839",
-    "nivel": "ERROR",
-    "mensaje": "Operación completada",
-    "servicio": "usuarios",
-    "contexto": {
-      "request_id": "cf0ca31a-ba9e-480f-879b-a7eadcd8ead0",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.143.17"
-    },
-    "marca_tiempo": "2025-11-14T18:23:01.975279"
-  },
-  {
-    "registro_id": "9070aee2-8e6b-4114-980b-8905fa5b84eb",
-    "nivel": "WARNING",
-    "mensaje": "Error al procesar solicitud",
-    "servicio": "incidentes",
-    "contexto": {
-      "request_id": "e11e648d-57da-44a0-8df8-503dbfbd4e00",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.143.123"
-    },
-    "marca_tiempo": "2025-11-14T17:23:01.975310"
-  },
-  {
-    "registro_id": "d9a8f1d5-bafd-4152-8b2f-b6cb053dfa33",
-    "nivel": "ERROR",
-    "mensaje": "Operación completada",
-    "servicio": "analitica",
-    "contexto": {
-      "request_id": "36722f91-5b54-4895-b612-7f951451fb28",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.78.10"
-    },
-    "marca_tiempo": "2025-11-14T08:23:01.975326"
-  },
-  {
-    "registro_id": "e359c31d-e70c-45e5-a282-782afbcaaf84",
-    "nivel": "ERROR",
-    "mensaje": "Servicio iniciado",
-    "servicio": "incidentes",
-    "contexto": {
-      "request_id": "20c38fe8-8ccf-4afd-a956-150341246f4f",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.134.105"
-    },
-    "marca_tiempo": "2025-11-15T23:23:01.975339"
-  },
-  {
-    "registro_id": "bb06d2bc-38d6-43dd-8569-e780a958aad2",
-    "nivel": "INFO",
-    "mensaje": "Error de validación",
-    "servicio": "incidentes",
-    "contexto": {
-      "request_id": "57cbb6c7-0109-466d-9f83-6b9bb0335183",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.223.47"
-    },
-    "marca_tiempo": "2025-11-14T19:23:01.975353"
-  },
-  {
-    "registro_id": "262f27aa-43ab-4074-9f27-f833e8357dd2",
-    "nivel": "CRITICAL",
-    "mensaje": "Conexión establecida",
-    "servicio": "notificaciones",
-    "contexto": {
-      "request_id": "a8650cb9-ca70-4047-aff9-bfac3d0ffcc4",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.219.160"
-    },
-    "marca_tiempo": "2025-11-16T11:23:01.975365"
-  },
-  {
-    "registro_id": "836abf73-b511-4b76-828f-885cb6e410da",
-    "nivel": "ERROR",
-    "mensaje": "Timeout en operación",
-    "servicio": "conexiones",
-    "contexto": {
-      "request_id": "cc162548-d470-4217-a82b-fd44cc1fdcd0",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.169.34"
-    },
-    "marca_tiempo": "2025-11-14T02:23:01.975378"
-  },
-  {
-    "registro_id": "56b03ef0-2362-4dce-b23f-654ca23d7453",
-    "nivel": "INFO",
-    "mensaje": "Error de validación",
-    "servicio": "conexiones",
-    "contexto": {
-      "request_id": "b344927e-05d9-4fb7-9727-91ff5756be7f",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.46.82"
-    },
-    "marca_tiempo": "2025-11-16T06:23:01.975390"
-  },
-  {
-    "registro_id": "9ca332bb-9b55-4f17-9f70-aa4c31a101af",
-    "nivel": "INFO",
-    "mensaje": "Operación completada",
-    "servicio": "usuarios",
-    "contexto": {
-      "request_id": "5604d131-7e48-4a3d-9692-de5f27663b20",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.255.63"
-    },
-    "marca_tiempo": "2025-11-16T06:23:01.975402"
-  },
-  {
-    "registro_id": "726d6cd4-72f7-4c1c-83b6-bcfbe2227f60",
-    "nivel": "CRITICAL",
-    "mensaje": "Conexión establecida",
-    "servicio": "conexiones",
-    "contexto": {
-      "request_id": "1f6cd3ce-c615-48a4-8810-26245bc1eef5",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.59.185"
-    },
-    "marca_tiempo": "2025-11-16T08:23:01.975414"
-  },
-  {
-    "registro_id": "cbb1dae8-64f9-4173-a3e7-9681fbce3b87",
-    "nivel": "CRITICAL",
-    "mensaje": "Error de validación",
-    "servicio": "usuarios",
-    "contexto": {
-      "request_id": "99b6051d-1266-46d1-8208-24a24615691b",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.206.64"
-    },
-    "marca_tiempo": "2025-11-14T21:23:01.975426"
-  },
-  {
-    "registro_id": "078a9dd8-5183-4413-9390-9c38aaed5f2b",
-    "nivel": "INFO",
     "mensaje": "Usuario autenticado exitosamente",
     "servicio": "usuarios",
     "contexto": {
-      "request_id": "0eb84de1-1703-4fcd-bbbf-8556141a35c5",
+      "request_id": "eb370aa8-14d5-4ee2-8c2f-144041c6b3a4",
       "user_agent": "AWS Lambda",
-      "ip": "192.168.28.89"
+      "ip": "192.168.107.150"
     },
-    "marca_tiempo": "2025-11-15T09:23:01.975439"
+    "marca_tiempo": "2025-11-16T10:13:36.814176"
   },
   {
-    "registro_id": "2ad059ba-40ea-44bc-acf6-e06410f2b92b",
-    "nivel": "INFO",
-    "mensaje": "Servicio iniciado",
+    "registro_id": "47bacfb2-e7ac-4466-9b9e-1402ac249e75",
+    "nivel": "ERROR",
+    "mensaje": "Error de validación",
+    "servicio": "conexiones",
+    "contexto": {
+      "request_id": "b7f36c54-a95a-4cb5-837a-afbe5cafae55",
+      "user_agent": "AWS Lambda",
+      "ip": "192.168.107.141"
+    },
+    "marca_tiempo": "2025-11-15T17:13:36.814188"
+  },
+  {
+    "registro_id": "393761a1-3960-408f-b4b7-cf94e0735e8a",
+    "nivel": "ERROR",
+    "mensaje": "Timeout en operación",
     "servicio": "incidentes",
     "contexto": {
-      "request_id": "0599c610-3a3d-4063-9b95-4b22e10214f5",
+      "request_id": "8e95725a-4164-4d29-b37d-f430b34c80e3",
       "user_agent": "AWS Lambda",
-      "ip": "192.168.51.2"
+      "ip": "192.168.131.99"
     },
-    "marca_tiempo": "2025-11-13T17:23:01.975452"
-  },
-  {
-    "registro_id": "97b96615-fa53-4401-82c3-605ef425b6cd",
-    "nivel": "WARNING",
-    "mensaje": "Conexión establecida",
-    "servicio": "conexiones",
-    "contexto": {
-      "request_id": "b1382743-2a4d-477d-846e-0cf8dd397bda",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.157.146"
-    },
-    "marca_tiempo": "2025-11-16T01:23:01.975470"
-  },
-  {
-    "registro_id": "7c3767a0-f09b-47e7-81ff-3c3aab5afc6e",
-    "nivel": "WARNING",
-    "mensaje": "Error de validación",
-    "servicio": "analitica",
-    "contexto": {
-      "request_id": "c6cc7e9b-af85-4aaa-9635-5fac0772f75f",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.73.238"
-    },
-    "marca_tiempo": "2025-11-16T07:23:01.975483"
-  },
-  {
-    "registro_id": "1afa59a4-59d6-4d3f-8cf5-5443f24e912a",
-    "nivel": "ERROR",
-    "mensaje": "Error al procesar solicitud",
-    "servicio": "analitica",
-    "contexto": {
-      "request_id": "fea42f31-6dd4-498c-8d82-bf5e074e3d6d",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.182.187"
-    },
-    "marca_tiempo": "2025-11-15T21:23:01.975495"
-  },
-  {
-    "registro_id": "a8db5292-3fb1-4a2f-8e5e-2ae2f3016e02",
-    "nivel": "WARNING",
-    "mensaje": "Datos guardados correctamente",
-    "servicio": "conexiones",
-    "contexto": {
-      "request_id": "e4e046b7-f3ed-451a-8014-dabc07a298b9",
-      "user_agent": "AWS Lambda",
-      "ip": "192.168.175.157"
-    },
-    "marca_tiempo": "2025-11-14T06:23:01.975507"
+    "marca_tiempo": "2025-11-14T16:13:36.814200"
   }
 ]

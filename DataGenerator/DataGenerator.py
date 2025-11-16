@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 import random
+import os
 
 # Configuración
 OUTPUT_DIR = Path(__file__).parent / "example-data"
@@ -55,6 +56,10 @@ MENSAJES_LOG = [
     "Operación completada"
 ]
 
+AUTHORITY_NAME = os.getenv("AUTHORITY_USUARIO_NOMBRE", "Autoridad UTEC")
+AUTHORITY_EMAIL = os.getenv("AUTHORITY_USUARIO_CORREO", "autoridad@utec.edu.pe")
+AUTHORITY_PASSWORD = os.getenv("AUTHORITY_USUARIO_CONTRASENA", "autoridad123")
+
 
 def generar_correo(nombre):
     """Genera un correo electrónico basado en el nombre"""
@@ -69,19 +74,32 @@ def generar_telefono():
 
 
 def generar_usuarios(cantidad=10):
-    """Genera datos de ejemplo para usuarios"""
     usuarios = []
-    roles = ["estudiante", "personal_administrativo", "autoridad"]
+    roles_no_autoridad = ["estudiante", "personal_administrativo"]
     
-    for i in range(cantidad):
+    autoridad = {
+        "correo": AUTHORITY_EMAIL,
+        "contrasena": AUTHORITY_PASSWORD,
+        "nombre": AUTHORITY_NAME,
+        "rol": "autoridad"
+    }
+    usuarios.append(autoridad)
+    correos_usados = {AUTHORITY_EMAIL}
+    
+    objetivo = max(1, cantidad)
+    while len(usuarios) < objetivo:
         nombre = random.choice(NOMBRES)
+        correo = generar_correo(nombre)
+        if correo in correos_usados:
+            continue
         usuario = {
-            "correo": generar_correo(nombre),
+            "correo": correo,
             "contrasena": f"hash_{uuid.uuid4().hex[:16]}",
             "nombre": nombre,
-            "rol": random.choice(roles)
+            "rol": random.choice(roles_no_autoridad)
         }
         usuarios.append(usuario)
+        correos_usados.add(correo)
     
     return usuarios
 
