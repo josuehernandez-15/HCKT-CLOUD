@@ -36,9 +36,9 @@ Ejemplo (rápido):
 
       ```json
       {
-        "nombre": "Yaritza Lopez",
-        "correo": "yartiza.lopez@utec.edu.pe",
-        "contrasena": "yaritza123"
+        "nombre": "Elmer Villegas",
+        "correo": "elmer.villegas@utec.edu.pe",
+        "contrasena": "elmer123"
       }
       ```
 
