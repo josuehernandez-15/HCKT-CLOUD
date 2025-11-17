@@ -32,7 +32,7 @@ functions:
   # Lambda 1: Análisis de incidentes por piso y estado
   AnalisisIncidentesPorPiso:
     handler: handler.analisis_incidentes_por_piso
-    timeout: 30
+    timeout: 29
     events:
       - http:
           path: analitica/incidentes-por-piso
@@ -42,7 +42,7 @@ functions:
   # Lambda 2: Análisis de incidentes por tipo y urgencia
   AnalisisIncidentesPorTipo:
     handler: handler.analisis_incidentes_por_tipo
-    timeout: 30
+    timeout: 29  # ✅ Ajustado a 29s
     events:
       - http:
           path: analitica/incidentes-por-tipo
@@ -52,7 +52,7 @@ functions:
   # Lambda 3: Análisis de tiempo de resolución
   AnalisisTiempoResolucion:
     handler: handler.analisis_tiempo_resolucion
-    timeout: 30
+    timeout: 29 
     events:
       - http:
           path: analitica/tiempo-resolucion
@@ -62,7 +62,7 @@ functions:
   # Lambda 4: Análisis de reportes por usuario
   AnalisisReportesPorUsuario:
     handler: handler.analisis_reportes_por_usuario
-    timeout: 30
+    timeout: 29 
     events:
       - http:
           path: analitica/reportes-por-usuario
@@ -72,7 +72,7 @@ functions:
   # Lambda 5: Trigger ETL Pipeline
   TriggerETL:
     handler: handler.trigger_etl_pipeline
-    timeout: 30
+    timeout: 29
     events:
       - http:
           path: analitica/trigger-etl
@@ -94,12 +94,19 @@ resources:
       Properties:
         ClusterName: alerta-utec-analitica-cluster
 
-    # Security Group
+    # Security Group para Airflow
     AnaliticaAirflowSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: Acceso para Airflow en ECS
+        GroupDescription: Access control for Airflow on ECS
         VpcId: ${env:ANALITICA_VPC_ID}
+        SecurityGroupIngress:
+          # ✅ Permitir acceso desde cualquier IP (Lambda fuera de VPC)
+          - IpProtocol: tcp
+            FromPort: 8080
+            ToPort: 8080
+            CidrIp: 0.0.0.0/0
+            Description: "Access from Lambda and external"
         SecurityGroupEgress:
           - IpProtocol: "-1"
             CidrIp: 0.0.0.0/0
@@ -153,6 +160,10 @@ resources:
               - Name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
                 Value: sqlite:////opt/airflow/airflow.db
               - Name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+                Value: "True"
+              - Name: AIRFLOW__API__AUTH_BACKENDS
+                Value: "airflow.api.auth.backend.basic_auth"
+              - Name: AIRFLOW__API__ENABLE_EXPERIMENTAL_API
                 Value: "True"
               - Name: _AIRFLOW_DB_MIGRATE
                 Value: "true"
@@ -212,15 +223,10 @@ resources:
                     print("=" * 60)
                     print("🎉 Airflow está funcionando en ECS!")
                     print("=" * 60)
-                    print("📋 Para usar el DAG real:")
-                    print("   1. Verifica que etl_dynamodb.py esté en S3:")
-                    print("      s3://${ANALITICA_S3_BUCKET}/dags/etl_dynamodb.py")
-                    print("   2. Reinicia el servicio ECS")
-                    print("=" * 60)
                 
                 with DAG(
                     'ejemplo_dag',
-                    description='DAG de ejemplo - reemplazar con etl_dynamodb.py',
+                    description='DAG de ejemplo',
                     start_date=datetime(2024, 1, 1),
                     schedule_interval='@daily',
                     catchup=False,
@@ -249,6 +255,7 @@ resources:
                 echo "✅ Iniciando Airflow Standalone"
                 echo "📊 WebUI: http://localhost:8080"
                 echo "👤 Usuario: admin / admin"
+                echo "🔑 API REST habilitada en /api/v1/"
                 echo "=========================================="
                 
                 exec airflow standalone

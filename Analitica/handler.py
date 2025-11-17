@@ -9,6 +9,8 @@ from datetime import datetime
 from decimal import Decimal
 import boto3
 from pathlib import Path
+import base64
+import requests
 
 S3_PREFIX = "analitica/ingesta"
 
@@ -401,50 +403,217 @@ def analisis_reportes_por_usuario(event, context):
 
 def trigger_etl_pipeline(event, context):
     """
-    Lambda 5: Triggerea el DAG de Airflow manualmente actualizando el servicio ECS
+    Lambda 5: Triggerea el DAG de Airflow directamente via API REST
     """
     try:
+        # Obtener la IP pública del contenedor de Airflow
+        ecs_client = boto3.client('ecs')
+        ec2_client = boto3.client('ec2')
+        
         cluster = 'alerta-utec-analitica-cluster'
         service = 'alerta-utec-analitica-airflow'
         
-        print(f"🚀 Triggeando ETL Pipeline en Airflow...")
-        print(f"   Cluster: {cluster}")
-        print(f"   Service: {service}")
+        print(f"🔍 Buscando tarea de Airflow en ejecución...")
         
-        # Forzar nuevo despliegue para actualizar el DAG
-        response = ecs_client.update_service(
+        # Listar tareas del servicio
+        tasks_response = ecs_client.list_tasks(
             cluster=cluster,
-            service=service,
-            forceNewDeployment=True
+            serviceName=service,
+            desiredStatus='RUNNING'
         )
         
-        service_arn = response['service']['serviceArn']
-        status = response['service']['status']
+        if not tasks_response.get('taskArns'):
+            return {
+                'statusCode': 503,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'error': 'Servicio de Airflow no está en ejecución',
+                    'message': 'El contenedor de Airflow debe estar activo'
+                })
+            }
         
-        print(f"✅ Servicio actualizado: {status}")
+        task_arn = tasks_response['taskArns'][0]
+        print(f"✅ Tarea encontrada: {task_arn}")
         
+        # Obtener detalles de la tarea
+        task_details = ecs_client.describe_tasks(
+            cluster=cluster,
+            tasks=[task_arn]
+        )
+        
+        # Extraer ENI (Elastic Network Interface)
+        attachments = task_details['tasks'][0].get('attachments', [])
+        eni_id = None
+        
+        for attachment in attachments:
+            if attachment['type'] == 'ElasticNetworkInterface':
+                for detail in attachment['details']:
+                    if detail['name'] == 'networkInterfaceId':
+                        eni_id = detail['value']
+                        break
+        
+        if not eni_id:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'error': 'No se pudo obtener la interfaz de red de Airflow'
+                })
+            }
+        
+        print(f"🔍 ENI ID: {eni_id}")
+        
+        # Obtener IP pública del ENI
+        eni_details = ec2_client.describe_network_interfaces(
+            NetworkInterfaceIds=[eni_id]
+        )
+        
+        public_ip = eni_details['NetworkInterfaces'][0].get('Association', {}).get('PublicIp')
+        
+        if not public_ip:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'error': 'Airflow no tiene IP pública asignada'
+                })
+            }
+        
+        print(f"🌐 IP Pública de Airflow: {public_ip}")
+        
+        # Configurar autenticación básica
+        username = 'admin'
+        password = 'admin'
+        auth_string = f"{username}:{password}"
+        auth_bytes = auth_string.encode('utf-8')
+        auth_b64 = base64.b64encode(auth_bytes).decode('utf-8')
+        
+        # ✅ Definir headers ANTES de usarlos
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Basic {auth_b64}'
+        }
+        
+        # Llamar a la API de Airflow para triggear el DAG
+        dag_id = 'etl_dynamodb_a_glue_athena'
+        
+        # ✅ PASO 1: Activar (unpause) el DAG si está pausado
+        unpause_url = f"http://{public_ip}:8080/api/v1/dags/{dag_id}"
+        print(f"🔓 Activando DAG (unpause)...")
+        
+        try:
+            unpause_response = requests.patch(
+                unpause_url,
+                headers=headers,
+                json={"is_paused": False},
+                timeout=5
+            )
+            if unpause_response.status_code == 200:
+                print(f"✅ DAG activado exitosamente")
+            else:
+                print(f"⚠️  No se pudo activar el DAG: {unpause_response.status_code}")
+        except Exception as e:
+            print(f"⚠️  Error activando DAG (continuando de todos modos): {e}")
+        
+        # ✅ PASO 2: Triggear el DAG
+        airflow_url = f"http://{public_ip}:8080/api/v1/dags/{dag_id}/dagRuns"
+        
+        # Payload para triggear el DAG
+        payload = {
+            'conf': {},
+            'logical_date': datetime.utcnow().isoformat() + 'Z'
+        }
+        
+        print(f"🚀 Triggeando DAG: {dag_id}")
+        print(f"📡 URL: {airflow_url}")
+        
+        # Hacer la petición con timeout de 10 segundos
+        response = requests.post(
+            airflow_url,
+            headers=headers,
+            json=payload,
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            dag_run_data = response.json()
+            print(f"✅ DAG triggeado exitosamente")
+            print(f"📊 DAG Run ID: {dag_run_data.get('dag_run_id')}")
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'message': 'ETL Pipeline iniciado exitosamente',
+                    'dag_id': dag_id,
+                    'dag_run_id': dag_run_data.get('dag_run_id'),
+                    'estado': dag_run_data.get('state'),
+                    'airflow_url': f"http://{public_ip}:8080/dags/{dag_id}/grid",
+                    'instrucciones': [
+                        'El DAG se está ejecutando en Airflow',
+                        f'Monitorea el progreso en: http://{public_ip}:8080',
+                        'El proceso tomará aproximadamente 3-5 minutos'
+                    ]
+                })
+            }
+        elif response.status_code == 409:
+            # DAG ya está en ejecución
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'message': 'El DAG ya está en ejecución',
+                    'dag_id': dag_id,
+                    'airflow_url': f"http://{public_ip}:8080/dags/{dag_id}/grid"
+                })
+            }
+        else:
+            print(f"❌ Error de Airflow API: {response.status_code}")
+            print(f"📄 Response: {response.text}")
+            return {
+                'statusCode': response.status_code,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'error': 'Error al triggear el DAG',
+                    'details': response.text,
+                    'airflow_status_code': response.status_code
+                })
+            }
+        
+    except requests.exceptions.Timeout:
         return {
-            'statusCode': 200,
+            'statusCode': 504,
             'headers': {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
             'body': json.dumps({
-                'message': 'ETL Pipeline triggerado exitosamente',
-                'cluster': cluster,
-                'service': service,
-                'status': status,
-                'instrucciones': [
-                    'El servicio de Airflow se está reiniciando',
-                    'Espera 2-3 minutos para que el DAG esté disponible',
-                    'Accede a la interfaz de Airflow y activa el DAG manualmente',
-                    'O espera a que se ejecute según el schedule (@daily)'
-                ]
+                'error': 'Timeout al conectar con Airflow',
+                'message': 'Verifica que el servicio de Airflow esté activo'
             })
         }
-        
     except Exception as e:
         print(f"❌ Error triggeando ETL: {e}")
+        import traceback
+        print(traceback.format_exc())
         return {
             'statusCode': 500,
             'headers': {
