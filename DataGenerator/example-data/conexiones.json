@@ -1,62 +1,72 @@
 [
   {
-    "conexion_id": "676b4a09-ef7e-4632-8dc9-ba3d03285dc4",
-    "usuario_correo": "miguel.torres@utec.edu.pe",
-    "fecha_conexion": "2025-11-16T16:16:11.585274",
-    "expiracion_ttl": 1763316971
+    "conexion_id": "48ab0ca6-184b-4cf7-9762-9ec200cd5377",
+    "usuario_correo": "juan.pérez@utec.edu.pe",
+    "rol": "personal_administrativo",
+    "created_at": "2025-11-17T00:53:02.410796",
+    "expiracion_ttl": 1763355182
   },
   {
-    "conexion_id": "c1bcfcac-7bb0-4ce3-8c2c-03837558fead",
-    "usuario_correo": "maría.garcía@utec.edu.pe",
-    "fecha_conexion": "2025-11-16T16:34:11.585310",
-    "expiracion_ttl": 1763318051
+    "conexion_id": "55911791-266c-4e86-b3db-ccb7d55255a6",
+    "usuario_correo": "josé.gonzález@gmail.com",
+    "rol": "estudiante",
+    "created_at": "2025-11-17T00:06:02.410835",
+    "expiracion_ttl": 1763352362
   },
   {
-    "conexion_id": "729b0dac-4230-4aff-a158-c54fd85bcbdd",
-    "usuario_correo": "valentina.ortiz@outlook.com",
-    "fecha_conexion": "2025-11-16T17:27:11.585335",
-    "expiracion_ttl": 1763321231
-  },
-  {
-    "conexion_id": "dab8056f-ebc3-4bd6-abe7-a66f1d801c82",
-    "usuario_correo": "josé.gonzález@utec.edu.pe",
-    "fecha_conexion": "2025-11-16T16:58:11.585354",
-    "expiracion_ttl": 1763319491
-  },
-  {
-    "conexion_id": "e0b0f9e0-36a3-4085-bd72-63575d2ed37b",
-    "usuario_correo": "ana.martínez@gmail.com",
-    "fecha_conexion": "2025-11-16T18:06:11.585373",
-    "expiracion_ttl": 1763323571
-  },
-  {
-    "conexion_id": "1f89e23b-ff30-465b-9fba-509cedd6339a",
-    "usuario_correo": "camila.rojas@outlook.com",
-    "fecha_conexion": "2025-11-16T17:37:11.585394",
-    "expiracion_ttl": 1763321831
-  },
-  {
-    "conexion_id": "2a9c0eaa-2323-4a68-8323-e0968c2f884b",
-    "usuario_correo": "juan.pérez@gmail.com",
-    "fecha_conexion": "2025-11-16T16:40:11.585413",
-    "expiracion_ttl": 1763318411
-  },
-  {
-    "conexion_id": "4e3c644b-7724-44b1-a8f5-6fc5360fe5d3",
-    "usuario_correo": "valentina.ortiz@outlook.com",
-    "fecha_conexion": "2025-11-16T17:23:11.585428",
-    "expiracion_ttl": 1763320991
-  },
-  {
-    "conexion_id": "a4c59dc7-9a34-4a2b-b410-40a8bc112255",
-    "usuario_correo": "josé.gonzález@outlook.com",
-    "fecha_conexion": "2025-11-16T17:17:11.585443",
-    "expiracion_ttl": 1763320631
-  },
-  {
-    "conexion_id": "2565bb96-8baf-406f-b430-1749ab3eb0b2",
+    "conexion_id": "a1139228-75c9-4866-b223-ba439f0d7aad",
     "usuario_correo": "sofía.castro@utec.edu.pe",
-    "fecha_conexion": "2025-11-16T18:03:11.585458",
-    "expiracion_ttl": 1763323391
+    "rol": "estudiante",
+    "created_at": "2025-11-16T23:33:02.410860",
+    "expiracion_ttl": 1763350382
+  },
+  {
+    "conexion_id": "cf023bc6-aa7e-4618-b9f4-503fae471f4e",
+    "usuario_correo": "pedro.flores@utec.edu.pe",
+    "rol": "estudiante",
+    "created_at": "2025-11-17T00:21:02.410877",
+    "expiracion_ttl": 1763353262
+  },
+  {
+    "conexion_id": "f9ab066e-d246-458a-ac4a-0fd113d42f88",
+    "usuario_correo": "miguel.torres@utec.edu.pe",
+    "rol": "personal_administrativo",
+    "created_at": "2025-11-16T23:29:02.410892",
+    "expiracion_ttl": 1763350142
+  },
+  {
+    "conexion_id": "f71c5cce-e685-4c2d-82f8-ff62578575d2",
+    "usuario_correo": "isabel.ramírez@gmail.com",
+    "rol": "estudiante",
+    "created_at": "2025-11-17T00:09:02.410907",
+    "expiracion_ttl": 1763352542
+  },
+  {
+    "conexion_id": "122cdde7-8cb8-4652-96a2-f462632d7b4a",
+    "usuario_correo": "maría.garcía@outlook.com",
+    "rol": "personal_administrativo",
+    "created_at": "2025-11-16T23:07:02.411338",
+    "expiracion_ttl": 1763348822
+  },
+  {
+    "conexion_id": "81873388-f666-471e-a7fc-8bf262fe0701",
+    "usuario_correo": "juan.pérez@utec.edu.pe",
+    "rol": "personal_administrativo",
+    "created_at": "2025-11-16T23:41:02.411367",
+    "expiracion_ttl": 1763350862
+  },
+  {
+    "conexion_id": "73345588-bc30-46ee-b1f8-f4fa188dec22",
+    "usuario_correo": "sofía.castro@gmail.com",
+    "rol": "estudiante",
+    "created_at": "2025-11-16T23:31:02.411384",
+    "expiracion_ttl": 1763350262
+  },
+  {
+    "conexion_id": "c3aa3a31-c2de-44a8-b143-28ed49ff0689",
+    "usuario_correo": "diego.morales@utec.edu.pe",
+    "rol": "estudiante",
+    "created_at": "2025-11-16T23:46:02.411398",
+    "expiracion_ttl": 1763351162
   }
 ]

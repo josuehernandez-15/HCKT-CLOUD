@@ -13,13 +13,13 @@
     "tipo_area": { 
       "type": "string",
       "enum": [
-        "mantenimiento",
-        "electricidad",
         "limpieza",
         "seguridad",
+        "mantenimiento",
+        "electricidad",
         "ti",
         "logistica",
-        "otros"
+        "otro"
       ]
     },
 

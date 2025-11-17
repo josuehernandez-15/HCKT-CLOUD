@@ -24,7 +24,7 @@
 
     "tipo": {
       "type": "string",
-      "enum": ["limpieza", "seguridad", "mantenimiento", "otro"]
+      "enum": ["limpieza", "seguridad", "mantenimiento", "electricidad", "ti", "logistica", "otro"]
     },
 
     "nivel_urgencia": {
@@ -40,6 +40,18 @@
     "estado": {
       "type": "string",
       "enum": ["reportado", "en_progreso", "resuelto"]
+    },
+
+    "empleado_asignado": { 
+      "type": "object",
+      "properties": {
+        "empleado_id": { "type": "string" },
+        "nombre": { "type": "string" },
+        "tipo_area": { "type": "string" },
+        "telefono": { "type": "string" }
+      },
+      "required": ["empleado_id", "nombre", "tipo_area"],
+      "additionalProperties": false
     },
 
     "usuario_correo": { "type": "string" },

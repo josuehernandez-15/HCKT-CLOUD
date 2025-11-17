@@ -159,11 +159,11 @@ def generar_empleados(cantidad=None):
     return empleados
 
 
-def generar_incidentes(usuarios, cantidad=None):
+def generar_incidentes(usuarios, empleados, cantidad=None):
     """Genera datos de ejemplo para incidentes"""
     incidentes = []
     cantidad = max(1, cantidad or INCIDENTES_TOTAL)
-    tipos = ["limpieza", "TI", "seguridad", "mantenimiento", "otro"]
+    tipos = ["limpieza", "seguridad", "mantenimiento", "electricidad", "ti", "logistica", "otro"]
     niveles_urgencia = ["bajo", "medio", "alto", "critico"]
     estados = ["reportado", "en_progreso", "resuelto"]
     
@@ -171,9 +171,14 @@ def generar_incidentes(usuarios, cantidad=None):
     if not estudiantes:
         raise ValueError("Se requieren usuarios con rol 'estudiante' para generar incidentes")
     
+    empleados_activos = [e for e in empleados if e.get("estado") == "activo"]
+    if not empleados_activos:
+        print("⚠️  Advertencia: No hay empleados activos. Los incidentes en progreso/resueltos no tendrán empleado asignado.")
+    
     for i in range(cantidad):
         creado_en = datetime.now() - timedelta(days=random.randint(0, 30))
         tiene_actualizacion = random.random() > 0.5
+        estado = random.choice(estados)
         
         incidente = {
             "incidente_id": str(uuid.uuid4()),
@@ -189,10 +194,20 @@ def generar_incidentes(usuarios, cantidad=None):
             "evidencias": [
                 f"https://storage.example.com/evidencias/{uuid.uuid4()}.jpg"
             ] if random.random() > 0.3 else [],
-            "estado": random.choice(estados),
+            "estado": estado,
             "usuario_correo": random.choice(estudiantes)["correo"],
             "creado_en": creado_en.isoformat()
         }
+        
+        # Asignar empleado solo si el estado es "en_progreso" o "resuelto"
+        if estado in ["en_progreso", "resuelto"] and empleados_activos:
+            empleado = random.choice(empleados_activos)
+            incidente["empleado_asignado"] = {
+                "empleado_id": empleado["empleado_id"],
+                "nombre": empleado["nombre"],
+                "tipo_area": empleado["tipo_area"],
+                "telefono": empleado["contacto"]["telefono"]
+            }
         
         if tiene_actualizacion:
             incidente["actualizado_en"] = (creado_en + timedelta(hours=random.randint(1, 48))).isoformat()
@@ -332,9 +347,9 @@ def main():
     guardar_json(empleados, "empleados.json")
     print()
     
-    # Generar incidentes (requiere usuarios)
+    # Generar incidentes (requiere usuarios y empleados)
     print("📊 Generando incidentes...")
-    incidentes = generar_incidentes(usuarios)
+    incidentes = generar_incidentes(usuarios, empleados)
     validar_con_esquema(incidentes, "incidentes")
     guardar_json(incidentes, "incidentes.json")
     print()
