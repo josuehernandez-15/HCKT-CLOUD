@@ -13,6 +13,7 @@ management_api = boto3.client(
     endpoint_url=os.environ["WEBSOCKET_API_ENDPOINT"].replace("wss://", "https://")
 )
 
+
 def _broadcast(conexiones, payload):
     eliminados = []
     enviados = 0
@@ -41,8 +42,29 @@ def _broadcast(conexiones, payload):
     
     return enviados
 
+
+def _parse_body(event):
+    """
+    Soporta:
+    - Invocación vía API Gateway HTTP: event["body"] viene como string JSON.
+    - Invocación directa desde otra Lambda: event YA es el body.
+    """
+    # Caso: llamado desde otra Lambda (no viene "body")
+    if isinstance(event, dict) and "body" not in event:
+        return event
+
+    # Caso: API Gateway
+    raw_body = event.get("body") or "{}"
+
+    if isinstance(raw_body, str):
+        return json.loads(raw_body) if raw_body.strip() else {}
+    if isinstance(raw_body, dict):
+        return raw_body
+    return {}
+
+
 def lambda_handler(event, context):
-    body = json.loads(event.get("body") or "{}")
+    body = _parse_body(event)
     
     # Campos requeridos
     tipo = body.get("tipo")
