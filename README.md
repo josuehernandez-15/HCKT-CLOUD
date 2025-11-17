@@ -150,51 +150,6 @@ Ejemplo (rápido):
       }
       ```
 
-2) Incidentes
-
-### Alerta UTEC
-
-**Nota de despliegue (importante)**: Este proyecto NO debe desplegarse con `sls deploy` directamente. Use el script de orquestación en la raíz `setup_backend.sh`, que crea las tablas DynamoDB, instala dependencias, popula datos de ejemplo y luego realiza el despliegue ordenado con Serverless Framework.
-
-Este documento describe los servicios expuestos por la colección Postman incluida y muestra ejemplos de request/response para cada endpoint.
-
-### Servicios Disponibles
-
-1. **Usuarios**
-
-   El servicio `Usuarios` gestiona registro, inicio de sesión y administración básica de usuarios.
-
-   - **Registrar Usuario**
-     - Método: POST
-     - URL: `{{baserUrl_usuarios}}/usuario/crear`
-     - Cuerpo de la solicitud:
-
-       ```json
-       {
-         "nombre": "Yaritza Lopez",
-         "correo": "yaritza.lopez@utec.edu.pe",
-         "contrasena": "yaritza123",
-         "rol": "estudiante"
-       }
-       ```
-
-   - **Login Usuario**
-     - Método: POST
-     - URL: `{{baserUrl_usuarios}}/usuario/login`
-     - Cuerpo de la solicitud:
-
-       ```json
-       {
-         "correo": "yaritza.lopez@utec.edu.pe",
-         "contrasena": "yaritza123"
-       }
-       ```
-
-   - **Mi Usuario**
-     - Método: GET
-     - URL: `{{baserUrl_usuarios}}/usuario/mi`
-     - Headers: `Authorization: Bearer <token>`
-
 2. **Incidentes**
 
    Gestión de reportes de incidentes, evidencias y estados.
@@ -222,11 +177,64 @@ Este documento describe los servicios expuestos por la colección Postman inclui
      - Método: POST
      - URL: `{{baserUrl_incidentes}}/incidente/list`
      - Headers: `Authorization: Bearer <token>`
-     - Cuerpo (opcional):
+     - Cuerpo (opcional, soporta filtros):
 
        ```json
-       { "page": 0, "size": 10 }
+       {
+         "page": 0,
+         "size": 10,
+         "estado": "en_progreso",    // opcional: filtra por estado
+         "tipo": "mantenimiento",    // opcional: filtra por tipo
+         "nivel_urgencia": "medio"   // opcional: filtra por nivel_urgencia
+       }
        ```
+
+     - Comportamiento por rol (respuesta):
+       - Si el solicitante es **estudiante**, cada item en `contents` contiene campos resumidos:
+
+         ```json
+         {
+           "titulo": "...",
+           "piso": 2,
+           "tipo": "mantenimiento",
+           "nivel_urgencia": "medio",
+           "estado": "en_progreso",
+           "created_at": "2025-11-01T12:00:00Z",
+           "updated_at": "2025-11-02T08:00:00Z"
+         }
+         ```
+
+       - Si el solicitante es **autoridad** o **administrador_empleado**, recibe detalle completo por item:
+
+         ```json
+         {
+           "incidente_id": "<uuid>",
+           "titulo": "...",
+           "descripcion": "...",
+           "piso": 2,
+           "ubicacion": "Bloque A",
+           "tipo": "mantenimiento",
+           "nivel_urgencia": "medio",
+           "evidencias": [],
+           "estado": "en_progreso",
+           "usuario_correo": "user@utec.edu.pe",
+           "created_at": "2025-11-01T12:00:00Z",
+           "updated_at": "2025-11-02T08:00:00Z",
+           "coordenadas": { "lat": -12.0, "lng": -77.0 }
+         }
+         ```
+
+       - Respuesta paginada (ambos casos):
+
+         ```json
+         {
+           "contents": [ /* items */ ],
+           "page": 0,
+           "size": 10,
+           "totalElements": 123,
+           "totalPages": 13
+         }
+         ```
 
    - **Buscar Incidente (por ID)**
      - Método: POST
@@ -238,20 +246,64 @@ Este documento describe los servicios expuestos por la colección Postman inclui
        { "incidente_id": "<uuid>" }
        ```
 
+     - Permisos: sólo pueden consultar **autoridad**, **administrador_empleado** o el **propietario** (usuario que creó el incidente). La respuesta devuelve toda la información disponible del incidente (campos completos mostrados arriba).
+
    - **Actualizar Incidente (usuario dueño)**
      - Método: POST
      - URL: `{{baserUrl_incidentes}}/incidente/update`
      - Headers: `Authorization: Bearer <token>`
-     - Cuerpo: (misma estructura que creación + `incidente_id`)
+     - Permisos: sólo el **propietario** puede actualizar su incidente.
+     - Cuerpo (ejemplo):
+
+       ```json
+       {
+         "incidente_id": "{{incidente_id}}",
+         "titulo": "Fuga de agua actualizada",
+         "descripcion": "Actualización del incidente por el estudiante.",
+         "piso": 3,
+         "ubicacion": { "x": -76.88, "y": -12.88 },
+         "tipo": "mantenimiento",
+         "nivel_urgencia": "medio"
+       }
+       ```
 
    - **Cambiar Estado (admin)**
      - Método: POST
      - URL: `{{baserUrl_incidentes}}/incidente/change-state`
-     - Headers: `Authorization: Bearer <token>` (rol `personal_administrativo` o `autoridad`)
-     - Cuerpo:
+     - Headers: `Authorization: Bearer <token>` (roles: `personal_administrativo`, `autoridad`)
+     - Cuerpo (ejemplos):
+
+       - Marcar como en_progreso (requiere `empleado_correo`):
+
+         ```json
+         { "incidente_id": "<uuid>", "estado": "en_progreso", "empleado_correo": "empleado@utec.edu.pe" }
+         ```
+
+       - Marcar como resuelto (no requiere `empleado_correo`):
+
+         ```json
+         { "incidente_id": "<uuid>", "estado": "resuelto" }
+         ```
+
+   - **Historial (mis incidentes)**
+     - Método: POST
+     - URL: `{{baserUrl_incidentes}}/incidentes/historial`
+     - Headers: `Authorization: Bearer <token>` (token de estudiante)
+     - Cuerpo (opcional, soporta filtros iguales a `list`):
 
        ```json
-       { "incidente_id": "<uuid>", "estado": "en_progreso" }
+       {
+         "page": 0,
+         "size": 10,
+         "estado": "resuelto"   // opcional
+       }
+       ```
+
+     - Respuesta: igual al formato paginado de `list`, pero contiene sólo los incidentes del usuario autenticado.
+
+   - **Notas adicionales**
+     - El filtrado por `tipo`, `estado` y `nivel_urgencia` está soportado en los listados y en el historial.
+     - Las rutas y permisos siguen la lógica implementada en `list_report.py`, `search_report.py`, `update_report_users.py` y `update_report_admin.py`.
        ```
 
 3. **Notificaciones (HTTP + WebSocket)**
