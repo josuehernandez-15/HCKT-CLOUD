@@ -1,0 +1,158 @@
+{
+  "info": {
+    "generated_from": "Incidentes UTEC.postman_collection.json + lambda handlers",
+    "date": "2025-11-16"
+  },
+  "endpoints": [
+    {
+      "path": "/usuario/crear",
+      "method": "POST",
+      "headers": {
+        "Authorization": "Bearer <token> (opcional, necesario si se crea con rol distinto a 'estudiante')",
+        "Content-Type": "application/json"
+      },
+      "request_example": {
+        "nombre": "Yaritza Lopez",
+        "correo": "yartiza.lopez@utec.edu.pe",
+        "contrasena": "yaritza123",
+        "rol": "estudiante"
+      },
+      "responses": {
+        "201": {
+          "body": {
+            "message": "Usuario creado correctamente",
+            "usuario": { "correo": "correo@utec.edu.pe", "nombre": "Nombre", "rol": "estudiante" },
+            "token": "<jwt> (solo si es auto-registro)"
+          }
+        },
+        "400": { "body": { "message": "nombre, correo, contrasena y rol son obligatorios" } },
+        "403": { "body": { "message": "Solo puedes auto-registrarte como estudiante" } },
+        "500": { "body": { "message": "Error interno al crear el usuario" } }
+      }
+    },
+    {
+      "path": "/usuario/login",
+      "method": "POST",
+      "headers": { "Content-Type": "application/json" },
+      "request_example": { "correo": "usuario@utec.edu.pe", "contrasena": "secret" },
+      "responses": {
+        "200": {
+          "body": { "message": "Login exitoso", "token": "<jwt>", "usuario": { "correo": "...", "nombre": "...", "rol": "estudiante" } }
+        },
+        "400": { "body": { "message": "Body JSON inválido" } },
+        "401": { "body": { "message": "Credenciales inválidas" } },
+        "500": { "body": { "message": "Error al obtener usuario" } }
+      }
+    },
+    {
+      "path": "/usuario/mi",
+      "method": "GET",
+      "headers": { "Authorization": "Bearer <token>" },
+      "query_params": { "correo": "opcional (solo autoridad puede consultar otro usuario)" },
+      "responses": {
+        "200": { "body": { "message": "Usuario encontrado", "usuario": { "correo": "...", "nombre": "...", "rol": "..." } } },
+        "403": { "body": { "message": "Solo puedes ver tu propia información" } },
+        "404": { "body": { "message": "Usuario no encontrado" } },
+        "500": { "body": { "message": "Error al obtener usuario" } }
+      }
+    },
+    {
+      "path": "/usuario/modificar",
+      "method": "PUT",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "correo": "usuario@utec.edu.pe", "nombre": "Nuevo Nombre", "contrasena": "nueva" },
+      "responses": { "200": { "body": { "message": "Usuario modificado" } }, "403": {}, "400": {}, "500": {} }
+    },
+    {
+      "path": "/usuario/eliminar",
+      "method": "DELETE",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "correo": "usuario@utec.edu.pe" },
+      "responses": { "200": { "body": { "message": "Usuario eliminado" } }, "403": {}, "404": {}, "500": {} }
+    },
+    {
+      "path": "/empleados/crear",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "nombre": "Técnico Soporte", "tipo_area": "ti", "estado": "activo", "contacto": { "telefono": "+51 9...", "correo": "soporte@utec.edu.pe" } },
+      "responses": { "201": { "body": { "message": "Empleado creado", "empleado": { "empleado_id": "..." } } }, "400": {}, "403": {}, "500": {} }
+    },
+    {
+      "path": "/analitica/trigger-etl",
+      "method": "POST",
+      "headers": {},
+      "request_example": {},
+      "responses": { "200": { "body": { "message": "ETL trigger recibido" } } }
+    },
+    {
+      "path": "/analitica/incidentes-por-piso",
+      "method": "GET",
+      "headers": {},
+      "responses": { "200": { "body": { "data": [ { "piso": 1, "count": 12 } ] } } }
+    },
+    {
+      "path": "/notificaciones/incidente",
+      "method": "POST",
+      "headers": { "Content-Type": "application/json" },
+      "request_example": { "incidente_id": "INC-001", "estado": "EN_PROCESO", "destinatarios": ["user@utec.edu.pe"], "datos": { "mensaje": "Prueba" } },
+      "responses": { "200": { "body": { "message": "Notificaciones enviadas", "conexiones_encontradas": 5, "mensajes_enviados": 4 } }, "400": { "body": { "message": "tipo, titulo, mensaje e incidente_id son obligatorios" } } }
+    },
+    {
+      "path": "/incidente/create",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": {
+        "titulo": "Luz quemada",
+        "descripcion": "Falla en pasillo",
+        "piso": 2,
+        "ubicacion": "Bloque A",
+        "tipo": "mantenimiento",
+        "nivel_urgencia": "medio",
+        "coordenadas": { "lat": -12.0, "lng": -77.0 },
+        "evidencias": { "file_base64": "..." }
+      },
+      "responses": {
+        "201": { "body": { "message": "Incidencia registrada correctamente. En breve comenzaremos a atenderla.", "incidente_id": "<uuid>" } },
+        "400": { "body": { "message": "Falta el campo obligatorio: ..." } },
+        "401": { "body": { "message": "Token inválido" } },
+        "403": { "body": { "message": "No tienes permisos para crear un incidente" } },
+        "500": { "body": { "message": "Error al crear el incidente: ..." } }
+      }
+    },
+    {
+      "path": "/incidente/list",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "page": 0, "size": 10 },
+      "responses": { "200": { "body": { "contents": [], "page": 0, "size": 10, "totalElements": 42, "totalPages": 5 } }, "401": {}, "403": {} }
+    },
+    {
+      "path": "/incidente/search",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "incidente_id": "<uuid>" },
+      "responses": { "200": { "body": { "message": "Incidente encontrado", "incidente": { "incidente_id": "...", "titulo": "..." } } }, "403": {}, "404": {}, "401": {} }
+    },
+    {
+      "path": "/incidente/update",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "incidente_id": "<uuid>", "titulo": "Nuevo", "descripcion": "...", "piso": 1, "ubicacion": "...", "tipo": "limpieza", "nivel_urgencia": "bajo" },
+      "responses": { "200": { "body": { "message": "Incidente actualizado correctamente", "incidente_id": "<uuid>" } }, "403": { "body": { "message": "Solo puedes actualizar tus propios incidentes" } }, "404": {} }
+    },
+    {
+      "path": "/incidente/change-state",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "incidente_id": "<uuid>", "estado": "en_progreso" },
+      "responses": { "200": { "body": { "message": "Estado actualizado correctamente", "incidente_id": "<uuid>", "nuevo_estado": "en_progreso" } }, "400": { "body": { "message": "El estado debe ser 'en_progreso' o 'resuelto' para Admin" } }, "403": {}, "404": {} }
+    },
+    {
+      "path": "/logs/list",
+      "method": "POST",
+      "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+      "request_example": { "page": 0, "size": 20 },
+      "responses": { "200": { "body": { "contents": [], "page": 0, "size": 20, "totalElements": 10, "totalPages": 1 } }, "403": {}, "401": {} }
+    }
+  ]
+}

@@ -1,163 +1,305 @@
-**Alerta UTEC — Documentación de Endpoints**
+### Alerta UTEC
 
-- **Nota de despliegue (importante):** Este proyecto NO se despliega con `sls deploy` de forma directa. Use el script de orquestación definido en la raíz: `setup_backend.sh`. Ese script crea las tablas DynamoDB, instala dependencias, genera datos de ejemplo y ejecuta el despliegue en Serverless Framework en el orden correcto. Revisar/editar `setup_backend.sh` antes de ejecutar en un ambiente de producción.
+Este documento proporciona una guía rápida del proyecto **Alerta UTEC** y muestra cómo usar los servicios incluidos en la colección de Postman adjunta. Atención: el despliegue no se realiza con `sls deploy` de forma directa — vea la sección de despliegue.
 
-**Resumen**:
-- **Descripción**: Backend serverless para reporte y seguimiento de incidentes en campus UTEC.
-- **Tecnologías**: AWS Lambda, API Gateway (HTTP + WebSocket), DynamoDB, S3, (opcional Brevo para emails), Serverless Framework.
+### Nota de despliegue (IMPORTANTE)
 
-**Variables de entorno principales**
-- **`TABLE_INCIDENTES`**: tabla DynamoDB de incidentes.
-- **`TABLE_USUARIOS`**: tabla DynamoDB de usuarios.
-- **`TABLE_LOGS`**: tabla DynamoDB de logs (opcional).
-- **`TABLE_CONEXIONES`**: tabla DynamoDB para conexiones WebSocket.
-- **`INCIDENTES_BUCKET`**: bucket S3 para evidencias.
-- **`LAMBDA_NOTIFY_INCIDENTE`**: nombre/ARN de lambda que envía notificaciones WS.
-- **`WEBSOCKET_API_ENDPOINT`**: endpoint del API Gateway WebSocket (para `apigatewaymanagementapi`).
-- **`BREVO_API_KEY`, `EMAIL_FROM`**: para envío de correos (opcional).
+No use `sls deploy` directamente sin preparar los recursos. Use el script de orquestación `./setup_backend.sh` en la raíz del repositorio. Ese script crea tablas DynamoDB requeridas, instala dependencias, genera datos de ejemplo y finalmente ejecuta el despliegue ordenado con Serverless Framework.
 
-**Autenticación**
-- Todas las rutas protegidas requieren encabezado `Authorization: Bearer <token>` (JWT generado por `CrearUsuario` / sistema de auth). El authorizer Lambda valida y expone context con `correo`, `rol`, `nombre`.
+Ejemplo (rápido):
+### Servicios Disponibles
 
-**Endpoints (Lambda handlers)**
+1) Usuarios
 
-- **Crear Incidente** (`Incidentes/CRUD/create_report.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Roles permitidos: `estudiante`, `personal_administrativo`
-  - Body (JSON) requerido:
-    - `titulo` (string)
-    - `descripcion` (string)
-    - `piso` (int entre -2 y 11)
-    - `ubicacion` (string)
-    - `tipo` (uno de: `limpieza`, `TI`, `seguridad`, `mantenimiento`, `otro`)
-    - `nivel_urgencia` (uno de: `bajo`, `medio`, `alto`, `critico`)
-    - Opcionales: `coordenadas` {`lat`, `lng`}, `evidencias` {`file_base64`} (sube a S3 si `INCIDENTES_BUCKET` configurado)
-  - Respuestas:
-    - 201: { `message`, `incidente_id` }
-    - 400: validación de campos
-    - 401: token inválido
-    - 403: rol no autorizado
-    - 500: error interno / S3 / DynamoDB
-  - Efectos colaterales: guarda auditoría, envía correo de confirmación (Brevo) si configurado, invoca Lambda de notificaciones WS (`LAMBDA_NOTIFY_INCIDENTE`).
+   El servicio `Usuarios` gestiona registro, login y la administración de usuarios y empleados.
 
-- **Listar Incidentes (panel / paginación)** (`Incidentes/CRUD/list_report.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Roles permitidos: `estudiante`, `personal_administrativo`, `autoridad`
-  - Body (JSON) opcional: `page` (int, default 0), `size` (int, default 10)
-  - Respuesta 200: { `contents`: [incidentes], `page`, `size`, `totalElements`, `totalPages` }
-  - Notas: Para `estudiante` la respuesta incluye solo campos resumidos; para roles administrativos se retorna información completa.
+   Endpoints disponibles:
 
-- **Historial de un usuario (mis incidentes)** (`Incidentes/CRUD/historial_list.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Roles permitidos: `estudiante`, `personal_administrativo`, `autoridad`
-  - Body (JSON): `page`, `size` (opcional)
-  - Respuesta 200: paginación similar a `list_report`, pero filtrada por `usuario_correo` (historial personal).
+   - Registrar Usuario
+     - Método: POST
+     - URL: `{{baserUrl_usuarios}}/usuario/crear`
+     - Cuerpo:
 
-- **Buscar incidente por ID** (`Incidentes/CRUD/search_report.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{ "incidente_id": "<uuid>" }`
-  - Acceso: `personal_administrativo` y `autoridad` pueden ver cualquier incidente; `estudiante` solo su propio incidente.
-  - Respuestas:
-    - 200: { `message`, `incidente` }
-    - 400/401/403/404/500 según caso (validación / permisos / no encontrado / error DB)
+      ```json
+      {
+        "nombre": "Yaritza Lopez",
+        "correo": "yartiza.lopez@utec.edu.pe",
+        "contrasena": "yaritza123"
+      }
+      ```
 
-- **Actualizar incidente (usuario autor)** (`Incidentes/CRUD/update_report_users.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Roles permitidos: `estudiante` (solo dueño)
-  - Body (JSON) requerido: `incidente_id`, `titulo`, `descripcion`, `piso`, `ubicacion`, `tipo`, `nivel_urgencia` (misma validación que creación)
-  - Opcional: `coordenadas`, `evidencias` (base64 -> S3)
-  - Respuestas: 200 éxito, 400 validación, 403 no propietario, 404 no encontrado, 500 error interno
-  - Efectos: guarda auditoría y `updated_at`.
+   - Login Usuario
+     - Método: POST
+     - URL: `{{baserUrl_usuarios}}/usuario/login`
+     - Cuerpo:
 
-- **Cambiar estado (admin)** (`Incidentes/CRUD/update_report_admin.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Roles permitidos: `personal_administrativo`, `autoridad`
-  - Body: `{ "incidente_id": "<uuid>", "estado": "en_progreso" | "resuelto" }`
-  - Respuestas:
-    - 200: { `message`, `incidente_id`, `nuevo_estado` }
-    - 400: validación (estado no permitido)
-    - 401 / 403 / 404 / 500 según caso
-  - Efectos: guarda auditoría, envía correo al creador si configurado, notificación WS (`LAMBDA_NOTIFY_INCIDENTE`).
+      ```json
+      {
+        "correo": "{{correo_estudiante}}",
+        "contrasena": "{{contrasena_estudiante}}"
+      }
+      ```
 
-- **Logs (listar)** (`Logs/list_logs.py`)
-  - Método: POST
-  - Headers: `Authorization: Bearer <token>`
-  - Roles permitidos: `personal_administrativo`, `autoridad`
-  - Body: `page`, `size` (opcional)
-  - Respuesta 200: paginación con los registros de logs
+   - Obtener Mi Usuario
+     - Método: GET
+     - URL: `{{baserUrl_usuarios}}/usuario/mi`
+     - Headers: `Authorization: Bearer <token>`
 
-- **Usuarios: Crear usuario** (`Usuarios/CRUD/CrearUsuario.py`)
-  - Método: POST
-  - Headers: opcional `Authorization` (si autoridad crea otro usuario)
-  - Body: `{ "nombre", "correo", "contrasena", "rol" }`
-  - Reglas:
-    - Auto-registro sin token solo permite `rol = estudiante`.
-    - Si se provee token, solo `autoridad` puede crear usuarios con cualquier rol.
-  - Respuestas:
-    - 201: `{ message, usuario, token? }` (si se auto-registra devuelve token)
-    - 400/403/500 según validación/permiso/error DB
-  - Efectos: guarda auditoría, envía correo de bienvenida si Brevo configurado.
+   - Modificar Usuario
+     - Método: PUT
+     - URL: `{{baserUrl_usuarios}}/usuario/modificar`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo ejemplo:
 
-- **Usuarios: Login** (`Usuarios/CRUD/LoginUsuario.py`)
-  - Método: POST
-  - Body: `{ "correo", "contrasena" }`
-  - Respuestas:
-    - 200: `{ message, token, usuario:{ correo, nombre, rol } }`
-    - 400/401/500 según caso
+      ```json
+      {
+        "correo": "{{correo_estudiante}}",
+        "nombre": "Nombre Actualizado",
+        "contrasena": "{{contrasena_estudiante}}"
+      }
+      ```
 
-- **Mi Usuario** (`Usuarios/CRUD/MiUsuario.py`)
-  - Método: GET
-  - Headers: `Authorization` y/o uso del authorizer context
-  - Query param opcional: `correo` (solo `autoridad` puede consultar otros usuarios)
-  - Respuestas: 200 con datos del usuario (sin contraseña), 403, 404, 500 según caso
+   - Eliminar Usuario
+     - Método: DELETE
+     - URL: `{{baserUrl_usuarios}}/usuario/eliminar`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo ejemplo:
 
-- **Authorizer** (`Usuarios/CRUD/Authorizer.py`)
-  - Lambda Authorizer que valida el token y retorna contexto con `correo`, `rol`, `nombre`. Lanza `Unauthorized` si inválido.
+      ```json
+      {
+        "correo": "{{correo_estudiante}}"
+      }
+      ```
 
-**WebSocket (Notificaciones)**
-- **$connect** (`Notificaciones/handlers/connect.py`)
-  - Query string `token` requerido (JWT) para aceptar la conexión
-  - Guarda conexión en `TABLE_CONEXIONES` con `conexion_id`, `usuario_correo`, `rol`, TTL
-- **$disconnect** (`Notificaciones/handlers/disconnect.py`)
-  - Elimina la conexión de `TABLE_CONEXIONES`
-- **notify_incidente** (`Notificaciones/handlers/notify_incidente.py`)
-  - Invocada internamente (otra Lambda) o vía HTTP
-  - Body esperado (si se invoca vía API): `tipo`, `titulo`, `mensaje`, `incidente_id`, `destinatarios` (opcional lista de correos)
-  - Envía payload en vivo a conexiones encontradas usando `apigatewaymanagementapi`; elimina conexiones obsoletas (410)
+   - Obtener Usuario (por correo)
+     - Método: GET
+     - URL: `{{baserUrl_usuarios}}/usuario/obtener?correo=<correo>`
+     - Headers: `Authorization: Bearer <token>`
 
-**Comportamiento transversal**
-- Auditoría: cada creación/actualización registra un log `auditoria` en `TABLE_LOGS` (si configurada).
-- Manejo de números: los handlers convierten `int/float` a `Decimal` para DynamoDB y reconvierten para respuestas JSON.
-- Emails: se usan variables `BREVO_API_KEY` y `EMAIL_FROM`. Si faltan, se hacen logs y no se interrumpe la operación.
+   - Listar Usuarios (paginado)
+     - Método: POST
+     - URL: `{{baserUrl_usuarios}}/usuario/listar`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo ejemplo:
 
-**Ejemplos rápidos (curl)**
-- Login:
-  - curl -X POST -H 'Content-Type: application/json' -d '{"correo":"x@utec.edu","contrasena":"123456"}' https://.../usuarios/login
-- Crear incidente (ejemplo):
-  - curl -X POST -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"titulo":"Luz quemada","descripcion":"Falla en pasillo","piso":2,"ubicacion":"Bloque A","tipo":"mantenimiento","nivel_urgencia":"medio"}' https://.../incidentes/create
+      ```json
+      {
+        "limit": 5,
+        "last_key": "{{usuarios_last_key}}"
+      }
+      ```
 
-**Recomendaciones de despliegue**
-- Antes de ejecutar el despliegue verificar variables de entorno en el archivo `serverless.yml` o en el pipeline.
-- Ejecutar el script `setup_backend.sh` que: crea tablas, instala dependencias y ejecuta el despliegue ordenado. No usar `sls deploy` manual sin asegurar orden de recursos.
+   - Cambiar Contraseña
+     - Método: POST
+     - URL: `{{baserUrl_usuarios}}/usuario/cambiar-contrasena`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo ejemplo:
 
-**Requerimientos del sistema**
+      ```json
+      {
+        "contrasena_actual": "{{contrasena_estudiante}}",
+        "nueva_contrasena": "yaritza456"
+      }
+      ```
 
-| # | Requerimiento | Estado |
-|---:|---|:---:|
-| 1 | Registro y autenticación de usuarios • Registro e inicio con credenciales institucionales • Roles: estudiante, personal_administrativo, autoridad | ✅ |
-| 2 | Reporte de incidentes • Crear reportes con tipo, ubicación, descripción, nivel de urgencia • DynamoDB para almacenamiento • Identificador único por reporte | ✅ |
-| 3 | Actualización y seguimiento en tiempo real • Actualización de estado con WebSockets • Notificaciones instantáneas en cambios de estado • Estados: pendiente, en atención, resuelto | ✅ |
-| 4 | Panel administrativo • Visualizar incidentes activos • Filtrar, priorizar y cerrar reportes • Actualizaciones en tiempo real | ✅ |
-| 5 | Orquestación con Apache Airflow • Clasificación automática, envío de notificaciones, generación de reportes periódicos | ✅ (soporte previsto; integrar DAGs en Airflow externo) |
-| 6 | Gestión de notificaciones • WebSocket y notificaciones asíncronas (correo/SMS) según gravedad | ✅ |
-| 7 | Historial y trazabilidad • Historial completo de acciones (creación/actualizaciones/fechas/responsables) | ✅ |
-| 8 | Escalabilidad y resiliencia • Arquitectura serverless, escalado automático de Lambdas y DynamoDB | ✅ |
+   - Empleados (crear/listar/modificar/eliminar)
+    - Crear Empleado: `POST {{baserUrl_usuarios}}/empleados/crear`
+
+      ```json
+      {
+        "nombre": "Técnico Soporte",
+        "tipo_area": "ti",
+        "estado": "activo",
+        "contacto": {
+          "telefono": "+51 900000001",
+          "correo": "soporte.ti@utec.edu.pe"
+        }
+      }
+      ```
+
+    - Listar Empleados: `POST {{baserUrl_usuarios}}/empleados/listar` (paginado/filtrado)
+
+      ```json
+      {
+        "limit": 5,
+        "last_key": "{{empleados_last_key}}",
+        "estado": "activo"
+      }
+      ```
+
+    - Modificar Empleado: `PUT {{baserUrl_usuarios}}/empleados/modificar`
+
+      ```json
+      {
+        "empleado_id": "{{empleado_id}}",
+        "nombre": "Técnico Soporte",
+        "tipo_area": "ti",
+        "estado": "activo",
+        "contacto": {
+          "telefono": "+51 900000001",
+          "correo": "soporte.ti@utec.edu.pe"
+        }
+      }
+      ```
+
+    - Eliminar Empleado: `DELETE {{baserUrl_usuarios}}/empleados/eliminar`
+
+      ```json
+      {
+        "empleado_id": "{{empleado_id}}"
+      }
+      ```
+
+2) Incidentes
+
+### Alerta UTEC
+
+**Nota de despliegue (importante)**: Este proyecto NO debe desplegarse con `sls deploy` directamente. Use el script de orquestación en la raíz `setup_backend.sh`, que crea las tablas DynamoDB, instala dependencias, popula datos de ejemplo y luego realiza el despliegue ordenado con Serverless Framework.
+
+Este documento describe los servicios expuestos por la colección Postman incluida y muestra ejemplos de request/response para cada endpoint.
+
+### Servicios Disponibles
+
+1. **Usuarios**
+
+   El servicio `Usuarios` gestiona registro, inicio de sesión y administración básica de usuarios.
+
+   - **Registrar Usuario**
+     - Método: POST
+     - URL: `{{baserUrl_usuarios}}/usuario/crear`
+     - Cuerpo de la solicitud:
+
+       ```json
+       {
+         "nombre": "Yaritza Lopez",
+         "correo": "yaritza.lopez@utec.edu.pe",
+         "contrasena": "yaritza123",
+         "rol": "estudiante"
+       }
+       ```
+
+   - **Login Usuario**
+     - Método: POST
+     - URL: `{{baserUrl_usuarios}}/usuario/login`
+     - Cuerpo de la solicitud:
+
+       ```json
+       {
+         "correo": "yaritza.lopez@utec.edu.pe",
+         "contrasena": "yaritza123"
+       }
+       ```
+
+   - **Mi Usuario**
+     - Método: GET
+     - URL: `{{baserUrl_usuarios}}/usuario/mi`
+     - Headers: `Authorization: Bearer <token>`
+
+2. **Incidentes**
+
+   Gestión de reportes de incidentes, evidencias y estados.
+
+   - **Crear Incidente**
+     - Método: POST
+     - URL: `{{baserUrl_incidentes}}/incidente/create`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo de la solicitud:
+
+       ```json
+       {
+         "titulo": "Luz quemada",
+         "descripcion": "Falla en pasillo",
+         "piso": 2,
+         "ubicacion": "Bloque A",
+         "tipo": "mantenimiento",
+         "nivel_urgencia": "medio",
+         "coordenadas": { "lat": -12.0, "lng": -77.0 },
+         "evidencias": { "file_base64": "<base64>" }
+       }
+       ```
+
+   - **Listar Incidentes (paginado)**
+     - Método: POST
+     - URL: `{{baserUrl_incidentes}}/incidente/list`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo (opcional):
+
+       ```json
+       { "page": 0, "size": 10 }
+       ```
+
+   - **Buscar Incidente (por ID)**
+     - Método: POST
+     - URL: `{{baserUrl_incidentes}}/incidente/search`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo:
+
+       ```json
+       { "incidente_id": "<uuid>" }
+       ```
+
+   - **Actualizar Incidente (usuario dueño)**
+     - Método: POST
+     - URL: `{{baserUrl_incidentes}}/incidente/update`
+     - Headers: `Authorization: Bearer <token>`
+     - Cuerpo: (misma estructura que creación + `incidente_id`)
+
+   - **Cambiar Estado (admin)**
+     - Método: POST
+     - URL: `{{baserUrl_incidentes}}/incidente/change-state`
+     - Headers: `Authorization: Bearer <token>` (rol `personal_administrativo` o `autoridad`)
+     - Cuerpo:
+
+       ```json
+       { "incidente_id": "<uuid>", "estado": "en_progreso" }
+       ```
+
+3. **Notificaciones (HTTP + WebSocket)**
+
+   - **Notificar incidente (HTTP -> broadcast WS)**
+     - Método: POST
+     - URL: `{{baserUrl_notificaciones}}/notificaciones/incidente`
+     - Cuerpo de la solicitud (ejemplo):
+
+      ```json
+      {
+        "incidente_id": "INC-001",
+        "estado": "EN_PROCESO",
+        "destinatarios": ["{{correo_estudiante}}"],
+        "datos": {
+          "mensaje": "Prueba de notificación"
+        }
+      }
+      ```
+
+   - **WebSocket $connect**
+     - URL (WebSocket): `wss://<websocket-endpoint>/?token=<jwt>`
+     - El parámetro `token` es obligatorio; la Lambda guarda la conexión en `TABLE_CONEXIONES`.
+
+4. **Analítica**
+
+   Endpoints para triggers y reportes analíticos (ETL/Airflow).
+
+   - **Trigger ETL**
+     - Método: POST
+     - URL: `{{baserUrl_analitica}}/analitica/trigger-etl`
+
+   - **Incidentes por piso / por tipo / tiempo de resolución**
+     - Método: GET
+     - URL: `{{baserUrl_analitica}}/analitica/incidentes-por-piso`
+
+5. **Logs**
+
+   - **Listar logs**
+     - Método: POST
+     - URL: `{{baserUrl_logs}}/logs/list`
+     - Headers: `Authorization: Bearer <token>` (solo roles administrativos)
+     - Cuerpo (opcional): `{ "page": 0, "size": 20 }`
+
+### Despliegue sin servidor (Serverless)
+
+Este proyecto usa Serverless Framework, pero debe desplegarse usando el script de orquestación `setup_backend.sh` en la raíz. El script realiza en orden:
+
 | 9 | Análisis Predictivo y visualización (Opcional) • Integración con SageMaker para modelos predictivos y visualizaciones | ✅ (opcional, requiere integración adicional) |
 
 Si quieres, puedo:
@@ -165,6 +307,3 @@ Si quieres, puedo:
 - añadir la lista de variables de entorno por función en el `README`;
 - crear un archivo `API.md` separado con ejemplos curl/Postman.
 
----
-Archivo generado automáticamente a partir del código en el repositorio.
-# HCKT-CLOUD
